@@ -21,8 +21,6 @@ for (var i = 0; i < AVATAR_NUMBER_MAX; i++) {
   }
 }
 
-
-
 var timestamps = ['12:00', '13:00', '14:00'];
 
 var guests_minimum = ROOMS_MINIMUM * BEDS_IN_ROOM;
@@ -45,14 +43,27 @@ for (var i = 0; i < PHOTOS_NUMBER_MAX; i++) {
   housePhotos[i] = photoPath + (i + 1) + '.jpg';
 }
 
-// Объявляю массив похожих объявлений
-// var similarAdvertisments = {};
 
-// Создаю массив аватаров
+var createSimilarAdvertisement = function (avatarNumber) {
+  var similarAdvertisement = {};
+
+  var avatarPath = 'img/avatars/user'
+
+  if (avatarNumber < 10) {
+    avatar = avatarPath + '0' + avatarNumber + '.png';
+  } else {
+    avatar = avatarPath + avatarNumber + '.png';
+  }
+
+  similarAdvertisement.autor = {avatar};
+  // similarAdvertisement = autor;
 
 
-// Добавляю массив аватаров к объекту autor внутри массива similarAdvertisments
-// similarAdvertisments.autor = {avatar};
+  console.log(similarAdvertisement.autor);
 
-console.log(housePhotos);
+};
 
+createSimilarAdvertisement(1);
+
+
+console.log();
