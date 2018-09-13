@@ -18,9 +18,6 @@ var houseTypes = ['palace', 'flat', 'house', 'bungalo'];
 
 var timestamps = ['12:00', '13:00', '14:00'];
 
-var checkinTimes = timestamps;
-var checkoutTimes = timestamps;
-
 var houseFeatures = ["wifi", "dishwasher", "parking", "washer", "elevator", "conditioner"];
 
 var createSimilarAdvertisement = function (avatarNumber) {
@@ -75,15 +72,27 @@ var createSimilarAdvertisement = function (avatarNumber) {
 
   guests = randomFromTwo(guests_minimum, guests_maximum);
 
+  var checkinTimes = timestamps;
+  var checkoutTimes = timestamps;
+
+  checkin = checkinTimes[randomValue(checkinTimes)];
+  checkout = checkoutTimes[randomValue(checkoutTimes)];
+
+  var newArray = houseFeatures.slice(0, houseFeatures.length);
+
+  for (var i = 0; i < randomValue(newArray); i++) {
+    features = features.concat(newArray.splice(randomValue(newArray), 1));
+  }
+
   similarAdvertisement.autor = {avatar};
-  similarAdvertisement.offer = {title, adress, price, type, rooms, guests};
+  similarAdvertisement.offer = {title, adress, price, type, rooms, guests, checkin, checkout, features, description};
 
 
-  console.log(similarAdvertisement.offer);
+  console.log(similarAdvertisement.offer.features);
 
 };
 
 createSimilarAdvertisement(1);
 
 
-console.log();
+// console.log();
