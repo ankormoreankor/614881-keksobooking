@@ -1,3 +1,4 @@
+var ADS_COUNT = 8;
 var LOWEST_PRICE = 1000;
 var HIGHEST_PRICE = 1000000;
 var ROOMS_MIN = 1;
@@ -104,4 +105,14 @@ var createSimilarAdvertisement = function (avatarNumber) {
   similarAdvertisement.autor = {avatar};
   similarAdvertisement.offer = {title, adress, price, type, rooms, guests, checkin, checkout, features, description, photos};
   similarAdvertisement.location = {x, y};
+
+  return similarAdvertisement;
 };
+
+var advertisements = [];
+
+for (var i = 0; i < ADS_COUNT; i++) {
+  advertisements = advertisements.concat(createSimilarAdvertisement(i));
+}
+
+console.log(advertisements[4].offer);
