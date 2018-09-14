@@ -235,11 +235,3 @@ var pinFragment = document.createDocumentFragment();
 createPins(ADS_COUNT, pinFragment);
 addPins(mapPin, pinFragment);
 createPopup(0);
-
-
-
-
-
-
-// console.log(advertisements[landlordNumber].offer.type);
-
