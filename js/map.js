@@ -223,9 +223,13 @@ var createPopup = function (landlordNumber) {
 // Создаю массив, заполняю объектами
 var advertisements = [];
 
-for (var i = 1; i <= ADS_COUNT; i++) {
-  advertisements = advertisements.concat(createSimilarAdvertisement(i));
+var createAdsArray = function (adsCount) {
+  for (var i = 1; i <= adsCount; i++) {
+    advertisements = advertisements.concat(createSimilarAdvertisement(i));
+  }
 }
+
+createAdsArray(ADS_COUNT);
 
 activateMap(true);
 
