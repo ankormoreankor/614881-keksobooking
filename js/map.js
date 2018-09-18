@@ -105,10 +105,8 @@ var compareAndReturn = function (arr_1, arr_2, condition) {
 
 var createChild = function (tag, attribute, valueArr) {
   var newElem = document.createElement(tag);
-  console.log(tag, attribute, valueArr)
-  // for (var i = 0; i < valueArr.length; i++) {
-    newElem.setAttribute(attribute, valueArr);
-  // }
+
+  newElem.setAttribute(attribute, valueArr);
 
   return newElem;
 };
