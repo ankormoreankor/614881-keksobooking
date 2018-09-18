@@ -103,12 +103,12 @@ var compareAndReturn = function (arr_1, arr_2, condition) {
   return arr_2[i];
 };
 
-var createChild = function (tag, classArr) {
+var createChild = function (tag, attribute, valueArr) {
   var newElem = document.createElement(tag);
-
-  for (var i = 0; i < classArr.length; i++) {
-    newElem.classList.add(classArr[i]);
-  }
+  console.log(tag, attribute, valueArr)
+  // for (var i = 0; i < valueArr.length; i++) {
+    newElem.setAttribute(attribute, valueArr);
+  // }
 
   return newElem;
 };
@@ -201,7 +201,7 @@ var createPopup = function (landlordNumber) {
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < addsOffer.features.length; i++) {
-      fragment.appendChild(createChild('li', ['popup__feature', 'popup__feature--' + addsOffer.features[i]]));
+      fragment.appendChild(createChild('li', 'class', 'popup__feature' + ' ' + 'popup__feature--' + addsOffer.features[i]));
     }
 
     return parent.appendChild(fragment);
@@ -258,4 +258,3 @@ var pinFragment = document.createDocumentFragment();
 createPins(advertisements, pinFragment);
 addElem(mapPin, pinFragment);
 addElem(document.querySelector('.map'), createPopup(0));
-
