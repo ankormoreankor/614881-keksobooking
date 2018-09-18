@@ -169,7 +169,7 @@ var createPins = function (array, container) {
   return container;
 };
 
-var mapFiltersConteiner = document.querySelector('.map__filters-container');
+var mapFiltersContainer = document.querySelector('.map__filters-container');
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
 var createPopup = function (landlordNumber) {
@@ -234,7 +234,7 @@ var createPopup = function (landlordNumber) {
 
   popupCard.querySelector('.popup__avatar').src = advertisements[landlordNumber].author.avatar;
 
-  return popupCard;
+  return document.querySelector('.map').insertBefore(popupCard, mapFiltersContainer);
 };
 
 // НАЧАЛО ПРОГРАММЫ
@@ -255,4 +255,4 @@ var pinFragment = document.createDocumentFragment();
 
 createPins(advertisements, pinFragment);
 addElem(mapPin, pinFragment);
-addElem(document.querySelector('.map'), createPopup(0));
+createPopup(0);
