@@ -225,8 +225,7 @@ var createPopup = function (landlordNumber) {
   insertText('.popup__description', addsOffer.description, popupCard);
 
   var popupFeatures = popupCard.querySelector('.popup__features');
-  deleteChilds('.popup__feature', popupFeatures, popupCard);
-  appendFeatures(popupFeatures, addsOffer.features);
+  appendFeatures(deleteChilds('.popup__feature', popupFeatures, popupCard), addsOffer.features);
 
   var popupPhotos = popupCard.querySelector('.popup__photos');
   appendPhotos(popupPhotos, addsOffer.photos, '.popup__photo');
