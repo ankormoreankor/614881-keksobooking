@@ -145,6 +145,16 @@ var appendPhotos = function (parentBlock, photosArray, selector) {
   return parentBlock.appendChild(fragment);
 };
 
+var appendFeatures = function (parentBlock, featuresList) {
+  var fragment = document.createDocumentFragment();
+
+  for (var i = 0; i < featuresList.length; i++) {
+    fragment.appendChild(createChild('li', 'class', 'popup__feature' + ' ' + 'popup__feature--' + featuresList[i]));
+  }
+
+  return parentBlock.appendChild(fragment);
+};
+
 var createSimilarAd = function (avatarNumber) {
   var location = {
       x: getRandomFromTwo(MAP_INDENT, MAP_WIDTH - MAP_INDENT),
@@ -206,16 +216,6 @@ var createPopup = function (landlordNumber) {
   var popupCard = cardTemplate.cloneNode(true);
   var addsOffer = advertisements[landlordNumber].offer;
 
-  var appendFeatures = function (parent) {
-    var fragment = document.createDocumentFragment();
-
-    for (var i = 0; i < addsOffer.features.length; i++) {
-      fragment.appendChild(createChild('li', 'class', 'popup__feature' + ' ' + 'popup__feature--' + addsOffer.features[i]));
-    }
-
-    return parent.appendChild(fragment);
-  };
-
   insertText('.popup__title', addsOffer.title, popupCard);
   insertText('.popup__text--address', addsOffer.adress, popupCard);
   insertText('.popup__text--price', addsOffer.price + '₽/ночь', popupCard);
@@ -226,7 +226,7 @@ var createPopup = function (landlordNumber) {
 
   var popupFeatures = popupCard.querySelector('.popup__features');
   deleteChilds('.popup__feature', popupFeatures, popupCard);
-  appendFeatures(popupFeatures);
+  appendFeatures(popupFeatures, addsOffer.features);
 
   var popupPhotos = popupCard.querySelector('.popup__photos');
   appendPhotos(popupPhotos, addsOffer.photos, '.popup__photo');
