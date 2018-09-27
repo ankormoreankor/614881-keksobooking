@@ -291,4 +291,6 @@ var mapPinMain = mapPin.querySelector('.map__pin--main');
 mapPinMain.addEventListener('mouseup', function () {
   activateMap(true);
   activateElem(fieldsets);
+  notice.querySelector('.ad-form').classList.remove('ad-form--disabled');
 });
+
