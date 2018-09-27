@@ -188,7 +188,7 @@ var createSimilarAd = function (avatarNumber) {
 };
 
 var activateMap = function (condition) {
-  return condition = true ?
+  return condition === true ?
         document.querySelector('.map').classList.remove('map--faded') :
         document.querySelector('.map').classList.add('map--faded');
 };
@@ -246,9 +246,9 @@ var createAdsArr = function (adsCount) {
 };
 
 createAdsArr(ADS_COUNT);
-activateMap(true);
+activateMap(false);
 
 var mapPin = document.querySelector('.map__pins');
 
-addElem(mapPin, createPins(advertisements));
-createPopup(0);
+// addElem(mapPin, createPins(advertisements));
+// createPopup(0);
