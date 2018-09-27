@@ -187,12 +187,6 @@ var createSimilarAd = function (avatarNumber) {
   };
 };
 
-var activateMap = function (condition) {
-  return condition === true ?
-        document.querySelector('.map').classList.remove('map--faded') :
-        document.querySelector('.map').classList.add('map--faded');
-};
-
 var createPins = function (pinsArray) {
   var fragment = document.createDocumentFragment();
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -246,7 +240,6 @@ var createAdsArr = function (adsCount) {
 };
 
 createAdsArr(ADS_COUNT);
-activateMap(false);
 
 var mapPin = document.querySelector('.map__pins');
 
@@ -281,6 +274,18 @@ var activateElem = function (nodeOrNodeList) {
   return;
 };
 
+var activateMap = function (condition) {
+  return condition === true ? (
+        document.querySelector('.map').classList.remove('map--faded'),
+        activateElem(fieldsets),
+        notice.querySelector('.ad-form').classList.remove('ad-form--disabled')
+  ) : (
+        document.querySelector('.map').classList.add('map--faded'),
+        disableElem(fieldsets),
+        notice.querySelector('.ad-form').classList.add('ad-form--disabled')
+  )
+};
+
 var notice = document.querySelector('.notice');
 var fieldsets = notice.querySelectorAll('fieldset');
 
@@ -290,7 +295,5 @@ var mapPinMain = mapPin.querySelector('.map__pin--main');
 
 mapPinMain.addEventListener('mouseup', function () {
   activateMap(true);
-  activateElem(fieldsets);
-  notice.querySelector('.ad-form').classList.remove('ad-form--disabled');
 });
 
