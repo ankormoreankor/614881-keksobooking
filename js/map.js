@@ -252,3 +252,43 @@ var mapPin = document.querySelector('.map__pins');
 
 // addElem(mapPin, createPins(advertisements));
 // createPopup(0);
+
+// MODULE4-TASK1
+
+var stringToArr = function (someValue) {
+  var someArray = [];
+
+  return someArray = someArray.concat(someValue);
+};
+
+var disableElem = function (nodeOrNodeList) {
+  stringToArr(nodeOrNodeList);
+
+  nodeOrNodeList.forEach(function (node) {
+    node.setAttribute('disabled', '');
+  });
+
+  return;
+};
+
+var activateElem = function (nodeOrNodeList) {
+  stringToArr(nodeOrNodeList);
+
+  nodeOrNodeList.forEach(function (node) {
+    node.removeAttribute('disabled', '');
+  });
+
+  return;
+};
+
+var notice = document.querySelector('.notice');
+var fieldsets = notice.querySelectorAll('fieldset');
+
+disableElem(fieldsets);
+
+var mapPinMain = mapPin.querySelector('.map__pin--main');
+
+mapPinMain.addEventListener('mouseup', function () {
+  activateMap(true);
+  activateElem(fieldsets);
+});
