@@ -122,14 +122,14 @@ var insertText = function (selector, content, parentBlock) {
   return elem.textContent = content;
 };
 
-var deleteChilds = function (selector, node, parentBlock) {
+var deleteChilds = function (selector, parentBlock) {
   var childs = parentBlock.querySelectorAll(selector);
 
   for (var i = 0; i < childs.length; i++) {
-    node.removeChild(node.children[0]);
+    parentBlock.removeChild(childs[i]);
   }
 
-  return node;
+  return parentBlock;
 };
 
 var appendPhotos = function (parentBlock, photosArray, selector) {
@@ -211,6 +211,7 @@ var createPopup = function (landlordNumber) {
   var popupCard = cardTemplate.cloneNode(true);
   var addsOffer = advertisements[landlordNumber].offer;
 
+
   insertText('.popup__title', addsOffer.title, popupCard);
   insertText('.popup__text--address', addsOffer.adress, popupCard);
   insertText('.popup__text--price', addsOffer.price + '₽/ночь', popupCard);
@@ -220,7 +221,7 @@ var createPopup = function (landlordNumber) {
   insertText('.popup__description', addsOffer.description, popupCard);
 
   var popupFeatures = popupCard.querySelector('.popup__features');
-  appendFeatures(deleteChilds('.popup__feature', popupFeatures, popupCard), addsOffer.features);
+  appendFeatures(deleteChilds('.popup__feature', popupFeatures), addsOffer.features);
 
   var popupPhotos = popupCard.querySelector('.popup__photos');
   appendPhotos(popupPhotos, addsOffer.photos, '.popup__photo');
@@ -331,10 +332,14 @@ var mapPinMain = mapPins.querySelector('.map__pin--main');
 disableElem(fieldsets);
 setAddress(mapPinMain, false);
 
-mapPinMain.addEventListener('mouseup', function () {
+var onPointerMove = function () {
   activateMap(true);
   setAddress(mapPinMain, true);
-  addElem(mapPins, createPins(advertisements));
+  addElem(deleteChilds('button[type=button]', mapPins), createPins(advertisements));
+};
+
+mapPinMain.addEventListener('mouseup', function () {
+  onPointerMove();
 });
 
 
