@@ -10,6 +10,7 @@ var MAP_HEIGHT = 750;
 var MAP_INDENT = 130;
 var AVATAR_PATH = 'img/avatars/user0';
 var AVATAR_EXTENTION = '.png';
+var POINTER_ARROW_HEIGHT = 22;
 
 var advertismentTitles = [
   'Большая уютная квартира',
@@ -241,10 +242,7 @@ var createAdsArr = function (adsCount) {
 
 createAdsArr(ADS_COUNT);
 
-var mapPin = document.querySelector('.map__pins');
-
-// addElem(mapPin, createPins(advertisements));
-// createPopup(0);
+var mapPins = document.querySelector('.map__pins');
 
 // MODULE4-TASK1
 
@@ -286,14 +284,59 @@ var activateMap = function (condition) {
   )
 };
 
+var getElemCoordinate = function (elem) {
+  return {
+    left: parseInt(getComputedStyle(elem).left),
+    top: parseInt(getComputedStyle(elem).top)
+  };
+};
+
+var getElemSize = function (elem) {
+  return {
+    width: parseInt(getComputedStyle(elem).width),
+    height: parseInt(getComputedStyle(elem).height)
+  };
+};
+
+var getElemCenter = function (elem) {
+  return {
+    x: Math.ceil(getElemSize(elem).width / 2),
+    y: Math.ceil(getElemSize(elem).height / 2)
+  };
+};
+
+var getPointerCoordinate = function (elem, isMapActive) {
+  return isMapActive === true ?
+  {
+    left: getElemCoordinate(elem).left + getElemCenter(elem).x,
+    top: getElemCoordinate(elem).top + getElemSize(elem).height + POINTER_ARROW_HEIGHT
+  } : {
+    left: getElemCoordinate(elem).left + getElemCenter(elem).x,
+    top: getElemCoordinate(elem).top + getElemCenter(elem).y
+  };
+};
+
+var setAddress = function (elem, isMapActive) {
+  var address = document.querySelector('#address');
+
+  return address.setAttribute('placeholder',
+        getPointerCoordinate(elem, isMapActive).left + ', ' +
+        getPointerCoordinate(elem, isMapActive).top);
+};
+
 var notice = document.querySelector('.notice');
 var fieldsets = notice.querySelectorAll('fieldset');
+var mapPinMain = mapPins.querySelector('.map__pin--main');
 
 disableElem(fieldsets);
-
-var mapPinMain = mapPin.querySelector('.map__pin--main');
+setAddress(mapPinMain, false);
 
 mapPinMain.addEventListener('mouseup', function () {
   activateMap(true);
+  setAddress(mapPinMain, true);
+  addElem(mapPins, createPins(advertisements));
 });
 
+
+
+// createPopup(0);
