@@ -309,21 +309,21 @@ var getElemCenter = function (elem) {
 
 var getPointerCoordinate = function (elem, isMapActive) {
   return isMapActive === true ?
-  {
+  ({
     left: getElemCoordinate(elem).left + getElemCenter(elem).x,
     top: getElemCoordinate(elem).top + getElemSize(elem).height + POINTER_ARROW_HEIGHT
-  } : {
+  }) : ({
     left: getElemCoordinate(elem).left + getElemCenter(elem).x,
     top: getElemCoordinate(elem).top + getElemCenter(elem).y
-  };
+  });
 };
 
 var setAddress = function (elem, isMapActive) {
   var address = document.querySelector('#address');
 
   return address.setAttribute('placeholder',
-        getPointerCoordinate(elem, isMapActive).left + ', ' +
-        getPointerCoordinate(elem, isMapActive).top);
+    getPointerCoordinate(elem, isMapActive).left + ', ' +
+    getPointerCoordinate(elem, isMapActive).top);
 };
 
 var notice = document.querySelector('.notice');
@@ -341,11 +341,12 @@ var onPointerMove = function () {
 };
 
 var onPinClick = function (evt) {
+  var coordinates = {};
 
   if (evt.target.parentNode.hasAttribute('style')) {
-    var coordinates = getElemCoordinate(evt.target.parentNode);
+    coordinates = getElemCoordinate(evt.target.parentNode);
   } else if (evt.target.hasAttribute('style')) {
-    var coordinates = getElemCoordinate(evt.target);
+    coordinates = getElemCoordinate(evt.target);
   }
 
   return coordinates;
