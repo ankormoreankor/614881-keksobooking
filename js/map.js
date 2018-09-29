@@ -118,8 +118,9 @@ var addElem = function (parent, child) {
 
 var insertText = function (selector, content, parentBlock) {
   var elem = parentBlock.querySelector(selector);
+  elem.textContent = content;
 
-  return elem.textContent = content;
+  return elem;
 };
 
 var deleteChilds = function (selector, parentBlock) {
@@ -250,8 +251,9 @@ var mapPinsBlock = document.querySelector('.map__pins');
 
 var convertToArr = function (someValue) {
   var someArray = [];
+  someArray = someArray.concat(someValue);
 
-  return someArray = someArray.concat(someValue);
+  return someArray;
 };
 
 var disableElem = function (nodeOrNodeList) {
@@ -288,15 +290,15 @@ var activateMap = function (condition) {
 
 var getElemCoordinate = function (elem) {
   return {
-    left: parseInt(getComputedStyle(elem).left),
-    top: parseInt(getComputedStyle(elem).top)
+    left: parseInt(getComputedStyle(elem).left, 10),
+    top: parseInt(getComputedStyle(elem).top, 10)
   };
 };
 
 var getElemSize = function (elem) {
   return {
-    width: parseInt(getComputedStyle(elem).width),
-    height: parseInt(getComputedStyle(elem).height)
+    width: parseInt(getComputedStyle(elem).width, 10),
+    height: parseInt(getComputedStyle(elem).height, 10)
   };
 };
 
@@ -309,27 +311,26 @@ var getElemCenter = function (elem) {
 
 var getPointerCoordinate = function (elem, isMapActive) {
   return isMapActive === true ?
-  ({
-    left: getElemCoordinate(elem).left + getElemCenter(elem).x,
-    top: getElemCoordinate(elem).top + getElemSize(elem).height + POINTER_ARROW_HEIGHT
-  }) : ({
-    left: getElemCoordinate(elem).left + getElemCenter(elem).x,
-    top: getElemCoordinate(elem).top + getElemCenter(elem).y
-  });
+    {
+      left: getElemCoordinate(elem).left + getElemCenter(elem).x,
+      top: getElemCoordinate(elem).top + getElemSize(elem).height + POINTER_ARROW_HEIGHT
+    } : {
+      left: getElemCoordinate(elem).left + getElemCenter(elem).x,
+      top: getElemCoordinate(elem).top + getElemCenter(elem).y
+    };
 };
 
 var setAddress = function (elem, isMapActive) {
   var address = document.querySelector('#address');
 
   return address.setAttribute('placeholder',
-    getPointerCoordinate(elem, isMapActive).left + ', ' +
+      getPointerCoordinate(elem, isMapActive).left + ', ' +
     getPointerCoordinate(elem, isMapActive).top);
 };
 
 var notice = document.querySelector('.notice');
 var fieldsets = notice.querySelectorAll('fieldset');
 var mapPinMain = mapPinsBlock.querySelector('.map__pin--main');
-var mapPins = mapPinsBlock.querySelectorAll('.map__pin');
 
 disableElem(fieldsets);
 setAddress(mapPinMain, false);
@@ -353,7 +354,7 @@ var onPinClick = function (evt) {
 };
 
 var createCurrentPopup = function (evt) {
-  deleteChilds('.map__card', mapBlock)
+  deleteChilds('.map__card', mapBlock);
 
   for (var i = 0; i < advertisements.length; i++) {
     if (onPinClick(evt).left === advertisements[i].location.x) {
