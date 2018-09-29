@@ -158,9 +158,9 @@ var appendFeatures = function (parentBlock, featuresList) {
 
 var createSimilarAd = function (avatarNumber) {
   var location = {
-      x: getRandomFromTwo(MAP_INDENT, MAP_WIDTH - MAP_INDENT),
-      y: getRandomFromTwo(MAP_INDENT, MAP_HEIGHT - MAP_INDENT)
-    };
+    x: getRandomFromTwo(MAP_INDENT, MAP_WIDTH - MAP_INDENT),
+    y: getRandomFromTwo(MAP_INDENT, MAP_HEIGHT - MAP_INDENT)
+  };
 
   return {
     author: {
@@ -228,7 +228,7 @@ var createPopup = function (landlordNumber) {
 
   popupCard.querySelector('.popup__avatar').src = advertisements[landlordNumber].author.avatar;
 
-  return document.querySelector('.map').insertBefore(popupCard, mapFiltersContainer);
+  return mapBlock.insertBefore(popupCard, mapFiltersContainer);
 };
 
 // НАЧАЛО ПРОГРАММЫ
@@ -243,7 +243,8 @@ var createAdsArr = function (adsCount) {
 
 createAdsArr(ADS_COUNT);
 
-var mapPinsMain = document.querySelector('.map__pins');
+var mapBlock = document.querySelector('.map');
+var mapPinsBlock = document.querySelector('.map__pins');
 
 // MODULE4-TASK1
 
@@ -275,14 +276,14 @@ var activateElem = function (nodeOrNodeList) {
 
 var activateMap = function (condition) {
   return condition === true ? (
-        document.querySelector('.map').classList.remove('map--faded'),
-        activateElem(fieldsets),
-        notice.querySelector('.ad-form').classList.remove('ad-form--disabled')
+    mapBlock.classList.remove('map--faded'),
+    activateElem(fieldsets),
+    notice.querySelector('.ad-form').classList.remove('ad-form--disabled')
   ) : (
-        document.querySelector('.map').classList.add('map--faded'),
-        disableElem(fieldsets),
-        notice.querySelector('.ad-form').classList.add('ad-form--disabled')
-  )
+    mapBlock.classList.add('map--faded'),
+    disableElem(fieldsets),
+    notice.querySelector('.ad-form').classList.add('ad-form--disabled')
+  );
 };
 
 var getElemCoordinate = function (elem) {
@@ -327,8 +328,8 @@ var setAddress = function (elem, isMapActive) {
 
 var notice = document.querySelector('.notice');
 var fieldsets = notice.querySelectorAll('fieldset');
-var mapPinMain = mapPinsMain.querySelector('.map__pin--main');
-var mapPins = mapPinsMain.querySelectorAll('.map__pin');
+var mapPinMain = mapPinsBlock.querySelector('.map__pin--main');
+var mapPins = mapPinsBlock.querySelectorAll('.map__pin');
 
 disableElem(fieldsets);
 setAddress(mapPinMain, false);
@@ -336,9 +337,8 @@ setAddress(mapPinMain, false);
 var onPointerMove = function () {
   activateMap(true);
   setAddress(mapPinMain, true);
-  addElem(deleteChilds('button[type=button]', mapPinsMain), createPins(advertisements));
+  addElem(deleteChilds('button[type=button]', mapPinsBlock), createPins(advertisements));
 };
-
 
 var onPinClick = function (evt) {
 
@@ -352,6 +352,7 @@ var onPinClick = function (evt) {
 };
 
 var createCurrentPopup = function (evt) {
+  deleteChilds('.map__card', mapBlock)
 
   for (var i = 0; i < advertisements.length; i++) {
     if (onPinClick(evt).left === advertisements[i].location.x) {
@@ -364,4 +365,4 @@ var createCurrentPopup = function (evt) {
 
 mapPinMain.addEventListener('mouseup', onPointerMove);
 
-mapPinsMain.addEventListener('click', createCurrentPopup);
+mapPinsBlock.addEventListener('click', createCurrentPopup);
