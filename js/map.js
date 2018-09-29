@@ -243,18 +243,18 @@ var createAdsArr = function (adsCount) {
 
 createAdsArr(ADS_COUNT);
 
-var mapPins = document.querySelector('.map__pins');
+var mapPinsMain = document.querySelector('.map__pins');
 
 // MODULE4-TASK1
 
-var stringToArr = function (someValue) {
+var convertToArr = function (someValue) {
   var someArray = [];
 
   return someArray = someArray.concat(someValue);
 };
 
 var disableElem = function (nodeOrNodeList) {
-  stringToArr(nodeOrNodeList);
+  convertToArr(nodeOrNodeList);
 
   nodeOrNodeList.forEach(function (node) {
     node.setAttribute('disabled', '');
@@ -264,7 +264,7 @@ var disableElem = function (nodeOrNodeList) {
 };
 
 var activateElem = function (nodeOrNodeList) {
-  stringToArr(nodeOrNodeList);
+  convertToArr(nodeOrNodeList);
 
   nodeOrNodeList.forEach(function (node) {
     node.removeAttribute('disabled', '');
@@ -327,7 +327,8 @@ var setAddress = function (elem, isMapActive) {
 
 var notice = document.querySelector('.notice');
 var fieldsets = notice.querySelectorAll('fieldset');
-var mapPinMain = mapPins.querySelector('.map__pin--main');
+var mapPinMain = mapPinsMain.querySelector('.map__pin--main');
+var mapPins = mapPinsMain.querySelectorAll('.map__pin');
 
 disableElem(fieldsets);
 setAddress(mapPinMain, false);
@@ -335,13 +336,32 @@ setAddress(mapPinMain, false);
 var onPointerMove = function () {
   activateMap(true);
   setAddress(mapPinMain, true);
-  addElem(deleteChilds('button[type=button]', mapPins), createPins(advertisements));
+  addElem(deleteChilds('button[type=button]', mapPinsMain), createPins(advertisements));
 };
 
-mapPinMain.addEventListener('mouseup', function () {
-  onPointerMove();
-});
 
+var onPinClick = function (evt) {
 
+  if (evt.target.parentNode.hasAttribute('style')) {
+    var coordinates = getElemCoordinate(evt.target.parentNode);
+  } else if (evt.target.hasAttribute('style')) {
+    var coordinates = getElemCoordinate(evt.target);
+  }
 
-// createPopup(0);
+  return coordinates;
+};
+
+var createCurrentPopup = function (evt) {
+
+  for (var i = 0; i < advertisements.length; i++) {
+    if (onPinClick(evt).left === advertisements[i].location.x) {
+      if (onPinClick(evt).top === advertisements[i].location.y) {
+        createPopup(i);
+      }
+    }
+  }
+};
+
+mapPinMain.addEventListener('mouseup', onPointerMove);
+
+mapPinsMain.addEventListener('click', createCurrentPopup);
