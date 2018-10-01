@@ -10,6 +10,7 @@ var MAP_HEIGHT = 750;
 var MAP_INDENT = 130;
 var AVATAR_PATH = 'img/avatars/user0';
 var AVATAR_EXTENTION = '.png';
+var POINTER_ARROW_HEIGHT = 22;
 
 var advertismentTitles = [
   'Большая уютная квартира',
@@ -117,18 +118,19 @@ var addElem = function (parent, child) {
 
 var insertText = function (selector, content, parentBlock) {
   var elem = parentBlock.querySelector(selector);
+  elem.textContent = content;
 
-  return elem.textContent = content;
+  return elem;
 };
 
-var deleteChilds = function (selector, node, parentBlock) {
+var deleteChilds = function (selector, parentBlock) {
   var childs = parentBlock.querySelectorAll(selector);
 
   for (var i = 0; i < childs.length; i++) {
-    node.removeChild(node.children[0]);
+    parentBlock.removeChild(childs[i]);
   }
 
-  return node;
+  return parentBlock;
 };
 
 var appendPhotos = function (parentBlock, photosArray, selector) {
@@ -157,9 +159,9 @@ var appendFeatures = function (parentBlock, featuresList) {
 
 var createSimilarAd = function (avatarNumber) {
   var location = {
-      x: getRandomFromTwo(MAP_INDENT, MAP_WIDTH - MAP_INDENT),
-      y: getRandomFromTwo(MAP_INDENT, MAP_HEIGHT - MAP_INDENT)
-    };
+    x: getRandomFromTwo(MAP_INDENT, MAP_WIDTH - MAP_INDENT),
+    y: getRandomFromTwo(MAP_INDENT, MAP_HEIGHT - MAP_INDENT)
+  };
 
   return {
     author: {
@@ -187,12 +189,6 @@ var createSimilarAd = function (avatarNumber) {
   };
 };
 
-var activateMap = function (condition) {
-  return condition = true ?
-        document.querySelector('.map').classList.remove('map--faded') :
-        document.querySelector('.map').classList.add('map--faded');
-};
-
 var createPins = function (pinsArray) {
   var fragment = document.createDocumentFragment();
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -216,6 +212,7 @@ var createPopup = function (landlordNumber) {
   var popupCard = cardTemplate.cloneNode(true);
   var addsOffer = advertisements[landlordNumber].offer;
 
+
   insertText('.popup__title', addsOffer.title, popupCard);
   insertText('.popup__text--address', addsOffer.adress, popupCard);
   insertText('.popup__text--price', addsOffer.price + '₽/ночь', popupCard);
@@ -225,14 +222,14 @@ var createPopup = function (landlordNumber) {
   insertText('.popup__description', addsOffer.description, popupCard);
 
   var popupFeatures = popupCard.querySelector('.popup__features');
-  appendFeatures(deleteChilds('.popup__feature', popupFeatures, popupCard), addsOffer.features);
+  appendFeatures(deleteChilds('.popup__feature', popupFeatures), addsOffer.features);
 
   var popupPhotos = popupCard.querySelector('.popup__photos');
   appendPhotos(popupPhotos, addsOffer.photos, '.popup__photo');
 
   popupCard.querySelector('.popup__avatar').src = advertisements[landlordNumber].author.avatar;
 
-  return document.querySelector('.map').insertBefore(popupCard, mapFiltersContainer);
+  return mapBlock.insertBefore(popupCard, mapFiltersContainer);
 };
 
 // НАЧАЛО ПРОГРАММЫ
@@ -246,9 +243,128 @@ var createAdsArr = function (adsCount) {
 };
 
 createAdsArr(ADS_COUNT);
-activateMap(true);
 
-var mapPin = document.querySelector('.map__pins');
+var mapBlock = document.querySelector('.map');
+var mapPinsBlock = document.querySelector('.map__pins');
 
-addElem(mapPin, createPins(advertisements));
-createPopup(0);
+// MODULE4-TASK1
+
+var convertToArr = function (someValue) {
+  var someArray = [];
+  someArray = someArray.concat(someValue);
+
+  return someArray;
+};
+
+var disableElem = function (nodeOrNodeList) {
+  convertToArr(nodeOrNodeList);
+
+  nodeOrNodeList.forEach(function (node) {
+    node.setAttribute('disabled', '');
+  });
+
+  return;
+};
+
+var activateElem = function (nodeOrNodeList) {
+  convertToArr(nodeOrNodeList);
+
+  nodeOrNodeList.forEach(function (node) {
+    node.removeAttribute('disabled', '');
+  });
+
+  return;
+};
+
+var activateMap = function (condition) {
+  return condition === true ? (
+    mapBlock.classList.remove('map--faded'),
+    activateElem(fieldsets),
+    notice.querySelector('.ad-form').classList.remove('ad-form--disabled')
+  ) : (
+    mapBlock.classList.add('map--faded'),
+    disableElem(fieldsets),
+    notice.querySelector('.ad-form').classList.add('ad-form--disabled')
+  );
+};
+
+var getElemCoordinate = function (elem) {
+  return {
+    left: parseInt(getComputedStyle(elem).left, 10),
+    top: parseInt(getComputedStyle(elem).top, 10)
+  };
+};
+
+var getElemSize = function (elem) {
+  return {
+    width: parseInt(getComputedStyle(elem).width, 10),
+    height: parseInt(getComputedStyle(elem).height, 10)
+  };
+};
+
+var getElemCenter = function (elem) {
+  return {
+    x: Math.ceil(getElemSize(elem).width / 2),
+    y: Math.ceil(getElemSize(elem).height / 2)
+  };
+};
+
+var getPointerCoordinate = function (elem, isMapActive) {
+  return isMapActive === true ?
+    {
+      left: getElemCoordinate(elem).left + getElemCenter(elem).x,
+      top: getElemCoordinate(elem).top + getElemSize(elem).height + POINTER_ARROW_HEIGHT
+    } : {
+      left: getElemCoordinate(elem).left + getElemCenter(elem).x,
+      top: getElemCoordinate(elem).top + getElemCenter(elem).y
+    };
+};
+
+var setAddress = function (elem, isMapActive) {
+  var address = document.querySelector('#address');
+
+  return address.setAttribute('placeholder',
+      getPointerCoordinate(elem, isMapActive).left + ', ' +
+    getPointerCoordinate(elem, isMapActive).top);
+};
+
+var notice = document.querySelector('.notice');
+var fieldsets = notice.querySelectorAll('fieldset');
+var mapPinMain = mapPinsBlock.querySelector('.map__pin--main');
+
+disableElem(fieldsets);
+setAddress(mapPinMain, false);
+
+var onPointerMove = function () {
+  activateMap(true);
+  setAddress(mapPinMain, true);
+  addElem(deleteChilds('button[type=button]', mapPinsBlock), createPins(advertisements));
+};
+
+var onPinClick = function (evt) {
+  var coordinates = {};
+
+  if (evt.target.parentNode.hasAttribute('style')) {
+    coordinates = getElemCoordinate(evt.target.parentNode);
+  } else if (evt.target.hasAttribute('style')) {
+    coordinates = getElemCoordinate(evt.target);
+  }
+
+  return coordinates;
+};
+
+var createCurrentPopup = function (evt) {
+  deleteChilds('.map__card', mapBlock);
+
+  for (var i = 0; i < advertisements.length; i++) {
+    if (onPinClick(evt).left === advertisements[i].location.x) {
+      if (onPinClick(evt).top === advertisements[i].location.y) {
+        createPopup(i);
+      }
+    }
+  }
+};
+
+mapPinMain.addEventListener('mouseup', onPointerMove);
+
+mapPinsBlock.addEventListener('click', createCurrentPopup);
