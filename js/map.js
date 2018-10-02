@@ -11,6 +11,7 @@ var MAP_INDENT = 130;
 var AVATAR_PATH = 'img/avatars/user0';
 var AVATAR_EXTENTION = '.png';
 var POINTER_ARROW_HEIGHT = 22;
+var ESC_KEYCODE = 27;
 
 var advertismentTitles = [
   'Большая уютная квартира',
@@ -277,15 +278,15 @@ var activateElem = function (nodeOrNodeList) {
 };
 
 var activateMap = function (condition) {
-  return condition === true ? (
+  if (condition === true) {
     mapBlock.classList.remove('map--faded'),
     activateElem(fieldsets),
     notice.querySelector('.ad-form').classList.remove('ad-form--disabled')
-  ) : (
+  } else {
     mapBlock.classList.add('map--faded'),
     disableElem(fieldsets),
     notice.querySelector('.ad-form').classList.add('ad-form--disabled')
-  );
+  }
 };
 
 var getElemCoordinate = function (elem) {
@@ -353,6 +354,17 @@ var onPinClick = function (evt) {
   return coordinates;
 };
 
+var onPopupEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeMapPopup();
+  }
+};
+
+var closeMapPopup = function () {
+  deleteChilds('.map__card', mapBlock);
+  document.removeEventListener('keydown', onPopupEscPress);
+};
+
 var createCurrentPopup = function (evt) {
   deleteChilds('.map__card', mapBlock);
 
@@ -363,6 +375,11 @@ var createCurrentPopup = function (evt) {
       }
     }
   }
+
+  var popupCloseButton = mapBlock.querySelector('.popup__close');
+
+  popupCloseButton.addEventListener('click', closeMapPopup);
+  document.addEventListener('keydown', onPopupEscPress);
 };
 
 mapPinMain.addEventListener('mouseup', onPointerMove);
