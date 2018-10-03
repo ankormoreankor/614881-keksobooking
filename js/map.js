@@ -11,6 +11,7 @@ var MAP_INDENT = 130;
 var AVATAR_PATH = 'img/avatars/user0';
 var AVATAR_EXTENTION = '.png';
 var POINTER_ARROW_HEIGHT = 22;
+var ESC_KEYCODE = 27;
 
 var advertismentTitles = [
   'Большая уютная квартира',
@@ -174,7 +175,7 @@ var createSimilarAd = function (avatarNumber) {
       price: getRandomFromTwo(LOWEST_PRICE, HIGHEST_PRICE),
       type: houseTypes[getRandomValue(houseTypes)],
       rooms: getRandomFromTwo(ROOMS_MIN, ROOMS_MAX),
-      guests: getRandomFromTwo(1, 10),
+      guests: getRandomFromTwo(ROOMS_MIN, ROOMS_MAX),
       checkin: checkinCheckout[getRandomValue(checkinCheckout)],
       checkout: checkinCheckout[getRandomValue(checkinCheckout)],
       features: createRandomArr(houseFeatures),
@@ -277,15 +278,15 @@ var activateElem = function (nodeOrNodeList) {
 };
 
 var activateMap = function (condition) {
-  return condition === true ? (
-    mapBlock.classList.remove('map--faded'),
-    activateElem(fieldsets),
-    notice.querySelector('.ad-form').classList.remove('ad-form--disabled')
-  ) : (
-    mapBlock.classList.add('map--faded'),
-    disableElem(fieldsets),
-    notice.querySelector('.ad-form').classList.add('ad-form--disabled')
-  );
+  if (condition === true) {
+    mapBlock.classList.remove('map--faded');
+    activateElem(fieldsets);
+    notice.querySelector('.ad-form').classList.remove('ad-form--disabled');
+  } else {
+    mapBlock.classList.add('map--faded');
+    disableElem(fieldsets);
+    notice.querySelector('.ad-form').classList.add('ad-form--disabled');
+  }
 };
 
 var getElemCoordinate = function (elem) {
@@ -331,6 +332,9 @@ var setAddress = function (elem, isMapActive) {
 var notice = document.querySelector('.notice');
 var fieldsets = notice.querySelectorAll('fieldset');
 var mapPinMain = mapPinsBlock.querySelector('.map__pin--main');
+var roomsField = notice.querySelector('#room_number');
+var capacityField = notice.querySelector('#capacity');
+var formSubmitButton = notice.querySelector('.ad-form__submit');
 
 disableElem(fieldsets);
 setAddress(mapPinMain, false);
@@ -353,6 +357,17 @@ var onPinClick = function (evt) {
   return coordinates;
 };
 
+var onPopupEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeMapPopup();
+  }
+};
+
+var closeMapPopup = function () {
+  deleteChilds('.map__card', mapBlock);
+  document.removeEventListener('keydown', onPopupEscPress);
+};
+
 var createCurrentPopup = function (evt) {
   deleteChilds('.map__card', mapBlock);
 
@@ -363,8 +378,36 @@ var createCurrentPopup = function (evt) {
       }
     }
   }
+
+  var popupCloseButton = mapBlock.querySelector('.popup__close');
+
+  popupCloseButton.addEventListener('click', closeMapPopup);
+  document.addEventListener('keydown', onPopupEscPress);
+};
+
+var onSubmitValidateGuest = function () {
+  var rooms = parseInt(roomsField.value, 10);
+  var guests = parseInt(capacityField.value, 10);
+
+  if (guests > rooms && guests > 0) {
+    capacityField.setCustomValidity('Должно быть не более ' + roomsField.value + ' гостей');
+  } else if (rooms < 100 && guests === 0) {
+    capacityField.setCustomValidity('Должно быть не менее 1 гостя');
+  } else {
+    capacityField.setCustomValidity('');
+  }
+
+  if (rooms === 100 && guests !== 0) {
+    roomsField.setCustomValidity('Такое количество комнат не для гостей');
+  } else {
+    roomsField.setCustomValidity('');
+  }
 };
 
 mapPinMain.addEventListener('mouseup', onPointerMove);
 
 mapPinsBlock.addEventListener('click', createCurrentPopup);
+
+formSubmitButton.addEventListener('click', function () {
+  onSubmitValidateGuest();
+});
