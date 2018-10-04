@@ -324,7 +324,7 @@ var getPointerCoordinate = function (elem, isMapActive) {
 var setAddress = function (elem, isMapActive) {
   var address = document.querySelector('#address');
 
-  return address.setAttribute('placeholder',
+  return address.setAttribute('value',
       getPointerCoordinate(elem, isMapActive).left + ', ' +
     getPointerCoordinate(elem, isMapActive).top);
 };
