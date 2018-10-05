@@ -310,23 +310,23 @@ var getElemCenter = function (elem) {
   };
 };
 
-var getPointerCoordinate = function (elem, isMapActive) {
+var getPointerCoordinate = function (isMapActive) {
   return isMapActive === true ?
     {
-      left: getElemCoordinate(elem).left + getElemCenter(elem).x,
-      top: getElemCoordinate(elem).top + getElemSize(elem).height + POINTER_ARROW_HEIGHT
+      left: getElemCoordinate(mapPinMain).left + getElemCenter(mapPinMain).x,
+      top: getElemCoordinate(mapPinMain).top + getElemSize(mapPinMain).height + POINTER_ARROW_HEIGHT
     } : {
-      left: getElemCoordinate(elem).left + getElemCenter(elem).x,
-      top: getElemCoordinate(elem).top + getElemCenter(elem).y
+      left: getElemCoordinate(mapPinMain).left + getElemCenter(mapPinMain).x,
+      top: getElemCoordinate(mapPinMain).top + getElemCenter(mapPinMain).y
     };
 };
 
-var setAddress = function (elem, isMapActive) {
+var setAddress = function (isMapActive) {
   var address = document.querySelector('#address');
 
   return address.setAttribute('value',
-      getPointerCoordinate(elem, isMapActive).left + ', ' +
-    getPointerCoordinate(elem, isMapActive).top);
+      getPointerCoordinate(isMapActive).left + ', ' +
+    getPointerCoordinate(isMapActive).top);
 };
 
 var notice = document.querySelector('.notice');
@@ -339,7 +339,7 @@ var formSubmitButton = notice.querySelector('.ad-form__submit');
 disableElem(fieldsets);
 setAddress(mapPinMain, false);
 
-var onPointerMove = function () {
+var onPointerWasMoved = function () {
   activateMap(true);
   setAddress(mapPinMain, true);
   addElem(deleteChilds('button[type=button]', mapPinsBlock), createPins(advertisements));
@@ -404,7 +404,21 @@ var onSubmitValidateGuest = function () {
   }
 };
 
-mapPinMain.addEventListener('mouseup', onPointerMove);
+// var onPointerCatched = function (evt) {
+//   // вычислить координаты pointer, повесить обработчики движения и отпускания
+
+
+
+// };
+
+// mapPinMain.addEventListener('mousedown', function (evt) {
+//   evt.preventDefault();
+
+//   document.addEventListener('mousemove', onMouseMove);
+//   document.addEventListener('mouseup', onPointerWasMoved);
+// });
+
+mapPinMain.addEventListener('mouseup', onPointerWasMoved);
 
 mapPinsBlock.addEventListener('click', createCurrentPopup);
 
