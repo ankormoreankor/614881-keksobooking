@@ -5,9 +5,10 @@ var LOWEST_PRICE = 1000;
 var HIGHEST_PRICE = 1000000;
 var ROOMS_MIN = 1;
 var ROOMS_MAX = 5;
-var MAP_WIDTH = 980;
-var MAP_HEIGHT = 750;
-var MAP_INDENT = 130;
+var MAP_MAX_TOP = 630;
+var MAP_MIN_TOP = 130;
+var MAP_MIN_LEFT = 0;
+var MAP_RIGHT_INDENT = 40;
 var AVATAR_PATH = 'img/avatars/user0';
 var AVATAR_EXTENTION = '.png';
 var POINTER_ARROW_HEIGHT = 22;
@@ -58,6 +59,9 @@ var houseTypesRus = [
   'Дом',
   'Бунгало'
 ];
+
+var mapBlock = document.querySelector('.map');
+var mapWidth = mapBlock.offsetWidth;
 
 var getRandomValue = function (arr) {
   return Math.round(Math.random() * (arr.length - 1));
@@ -160,8 +164,8 @@ var appendFeatures = function (parentBlock, featuresList) {
 
 var createSimilarAd = function (avatarNumber) {
   var location = {
-    x: getRandomFromTwo(MAP_INDENT, MAP_WIDTH - MAP_INDENT),
-    y: getRandomFromTwo(MAP_INDENT, MAP_HEIGHT - MAP_INDENT)
+    x: getRandomFromTwo(MAP_MIN_LEFT, mapWidth - MAP_RIGHT_INDENT),
+    y: getRandomFromTwo(MAP_MIN_TOP, MAP_MAX_TOP)
   };
 
   return {
@@ -245,7 +249,6 @@ var createAdsArr = function (adsCount) {
 
 createAdsArr(ADS_COUNT);
 
-var mapBlock = document.querySelector('.map');
 var mapPinsBlock = document.querySelector('.map__pins');
 
 // MODULE4-TASK1
@@ -280,10 +283,16 @@ var activateElem = function (nodeOrNodeList) {
 var activateMap = function (condition) {
   if (condition === true) {
     mapBlock.classList.remove('map--faded');
+  } else {
+    mapBlock.classList.add('map--faded');
+  }
+};
+
+var activateForm = function (condition) {
+  if (condition === true) {
     activateElem(fieldsets);
     notice.querySelector('.ad-form').classList.remove('ad-form--disabled');
   } else {
-    mapBlock.classList.add('map--faded');
     disableElem(fieldsets);
     notice.querySelector('.ad-form').classList.add('ad-form--disabled');
   }
@@ -296,17 +305,10 @@ var getElemCoordinate = function (elem) {
   };
 };
 
-var getElemSize = function (elem) {
-  return {
-    width: parseInt(getComputedStyle(elem).width, 10),
-    height: parseInt(getComputedStyle(elem).height, 10)
-  };
-};
-
 var getElemCenter = function (elem) {
   return {
-    x: Math.ceil(getElemSize(elem).width / 2),
-    y: Math.ceil(getElemSize(elem).height / 2)
+    x: Math.ceil(elem.offsetWidth / 2),
+    y: Math.ceil(elem.offsetHeight / 2)
   };
 };
 
@@ -314,7 +316,7 @@ var getPointerCoordinate = function (isMapActive) {
   return isMapActive === true ?
     {
       left: getElemCoordinate(mapPinMain).left + getElemCenter(mapPinMain).x,
-      top: getElemCoordinate(mapPinMain).top + getElemSize(mapPinMain).height + POINTER_ARROW_HEIGHT
+      top: getElemCoordinate(mapPinMain).top + mapPinMain.offsetHeight + POINTER_ARROW_HEIGHT
     } : {
       left: getElemCoordinate(mapPinMain).left + getElemCenter(mapPinMain).x,
       top: getElemCoordinate(mapPinMain).top + getElemCenter(mapPinMain).y
@@ -337,13 +339,7 @@ var capacityField = notice.querySelector('#capacity');
 var formSubmitButton = notice.querySelector('.ad-form__submit');
 
 disableElem(fieldsets);
-setAddress(mapPinMain, false);
-
-var onPointerWasMoved = function () {
-  activateMap(true);
-  setAddress(mapPinMain, true);
-  addElem(deleteChilds('button[type=button]', mapPinsBlock), createPins(advertisements));
-};
+setAddress(false);
 
 var onPinClick = function (evt) {
   var coordinates = {};
@@ -404,21 +400,69 @@ var onSubmitValidateGuest = function () {
   }
 };
 
-// var onPointerCatched = function (evt) {
-//   // вычислить координаты pointer, повесить обработчики движения и отпускания
+var onPointerCatched = function (evt) {
+  evt.preventDefault();
 
+  var startPosition = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
 
+  var onPointerMove = function (moveEvt) {
+    moveEvt.preventDefault();
+    activateMap(true);
 
-// };
+    var shift = {
+      x: startPosition.x - moveEvt.clientX,
+      y: startPosition.y - moveEvt.clientY
+    };
 
-// mapPinMain.addEventListener('mousedown', function (evt) {
-//   evt.preventDefault();
+    startPosition = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
 
-//   document.addEventListener('mousemove', onMouseMove);
-//   document.addEventListener('mouseup', onPointerWasMoved);
-// });
+    var x = mapPinMain.offsetLeft;
+    var y = mapPinMain.offsetTop;
 
-mapPinMain.addEventListener('mouseup', onPointerWasMoved);
+    if (y >= MAP_MIN_TOP) {
+      if (y <= MAP_MAX_TOP) {
+        mapPinMain.style.top = (y - shift.y) + 'px';
+      } else {
+        mapPinMain.style.top = MAP_MAX_TOP + 'px';
+      }
+    } else {
+      mapPinMain.style.top = MAP_MIN_TOP + 'px';
+    }
+
+    if (x >= MAP_MIN_LEFT) {
+      if (x <= (mapWidth - mapPinMain.offsetWidth)) {
+        mapPinMain.style.left = (x - shift.x) + 'px';
+      } else {
+        mapPinMain.style.left = mapWidth - mapPinMain.offsetWidth + 'px';
+      }
+    } else {
+      mapPinMain.style.left = MAP_MIN_LEFT + 'px';
+    }
+
+  };
+
+  var onPointerWasMoved = function () {
+    setAddress(true);
+    activateForm(true);
+    addElem(deleteChilds('button[type=button]', mapPinsBlock), createPins(advertisements));
+
+    mapPinMain.removeEventListener('mouseleave', onPointerWasMoved);
+    mapPinMain.removeEventListener('mousemove', onPointerMove);
+    mapPinMain.removeEventListener('mouseup', onPointerWasMoved);
+  };
+
+  mapPinMain.addEventListener('mouseleave', onPointerWasMoved);
+  mapPinMain.addEventListener('mousemove', onPointerMove);
+  mapPinMain.addEventListener('mouseup', onPointerWasMoved);
+};
+
+mapPinMain.addEventListener('mousedown', onPointerCatched);
 
 mapPinsBlock.addEventListener('click', createCurrentPopup);
 
