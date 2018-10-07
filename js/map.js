@@ -335,6 +335,8 @@ var onPointerCatched = function (evt) {
       setPointerLeft(MAP_MIN_LEFT);
     }
 
+    Pointer.addEventListener('mouseup', onPointerWasMoved);
+
   };
 
   var onPointerWasMoved = function () {
@@ -349,7 +351,6 @@ var onPointerCatched = function (evt) {
 
   Pointer.addEventListener('mouseleave', onPointerWasMoved);
   Pointer.addEventListener('mousemove', onPointerMove);
-  Pointer.addEventListener('mouseup', onPointerWasMoved);
 };
 
 Pointer.addEventListener('mousedown', onPointerCatched);

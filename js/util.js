@@ -84,6 +84,13 @@
       return parentBlock;
     },
 
+    convertToArr: function (someValue) {
+      var someArray = [];
+      someArray = someArray.concat(someValue);
+
+      return someArray;
+    },
+
     disableElem: function (nodeOrNodeList) {
       this.convertToArr(nodeOrNodeList);
 
