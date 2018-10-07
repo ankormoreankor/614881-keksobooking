@@ -336,7 +336,6 @@ var onPointerCatched = function (evt) {
     }
 
     Pointer.addEventListener('mouseup', onPointerWasMoved);
-
   };
 
   var onPointerWasMoved = function () {
