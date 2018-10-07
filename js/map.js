@@ -315,11 +315,11 @@ var getElemCenter = function (elem) {
 var getPointerCoordinate = function (isMapActive) {
   return isMapActive === true ?
     {
-      left: getElemCoordinate(mapPinMain).left + getElemCenter(mapPinMain).x,
-      top: getElemCoordinate(mapPinMain).top + mapPinMain.offsetHeight + POINTER_ARROW_HEIGHT
+      left: getElemCoordinate(Pointer).left + getElemCenter(Pointer).x,
+      top: getElemCoordinate(Pointer).top + Pointer.offsetHeight + POINTER_ARROW_HEIGHT
     } : {
-      left: getElemCoordinate(mapPinMain).left + getElemCenter(mapPinMain).x,
-      top: getElemCoordinate(mapPinMain).top + getElemCenter(mapPinMain).y
+      left: getElemCoordinate(Pointer).left + getElemCenter(Pointer).x,
+      top: getElemCoordinate(Pointer).top + getElemCenter(Pointer).y
     };
 };
 
@@ -333,7 +333,7 @@ var setAddress = function (isMapActive) {
 
 var notice = document.querySelector('.notice');
 var fieldsets = notice.querySelectorAll('fieldset');
-var mapPinMain = mapPinsBlock.querySelector('.map__pin--main');
+var Pointer = mapPinsBlock.querySelector('.map__pin--main');
 var roomsField = notice.querySelector('#room_number');
 var capacityField = notice.querySelector('#capacity');
 var formSubmitButton = notice.querySelector('.ad-form__submit');
@@ -422,27 +422,36 @@ var onPointerCatched = function (evt) {
       y: moveEvt.clientY
     };
 
-    var x = mapPinMain.offsetLeft;
-    var y = mapPinMain.offsetTop;
+    var x = Pointer.offsetLeft;
+    var y = Pointer.offsetTop;
+    var w = Pointer.offsetWidth;
+
+    var setPointerTop = function (top) {
+      Pointer.style.top = top + 'px';
+    };
+
+    var setPointerLeft = function (left) {
+      Pointer.style.left = left + 'px';
+    };
 
     if (y >= MAP_MIN_TOP) {
       if (y <= MAP_MAX_TOP) {
-        mapPinMain.style.top = (y - shift.y) + 'px';
+        setPointerTop(y - shift.y);
       } else {
-        mapPinMain.style.top = MAP_MAX_TOP + 'px';
+        setPointerTop(MAP_MAX_TOP);
       }
     } else {
-      mapPinMain.style.top = MAP_MIN_TOP + 'px';
+      setPointerTop(MAP_MIN_TOP);
     }
 
     if (x >= MAP_MIN_LEFT) {
-      if (x <= (mapWidth - mapPinMain.offsetWidth)) {
-        mapPinMain.style.left = (x - shift.x) + 'px';
+      if (x <= (mapWidth - w)) {
+        setPointerLeft(x - shift.x);
       } else {
-        mapPinMain.style.left = mapWidth - mapPinMain.offsetWidth + 'px';
+        setPointerLeft(mapWidth - w);
       }
     } else {
-      mapPinMain.style.left = MAP_MIN_LEFT + 'px';
+      setPointerLeft(MAP_MIN_LEFT);
     }
 
   };
@@ -452,17 +461,17 @@ var onPointerCatched = function (evt) {
     activateForm(true);
     addElem(deleteChilds('button[type=button]', mapPinsBlock), createPins(advertisements));
 
-    mapPinMain.removeEventListener('mouseleave', onPointerWasMoved);
-    mapPinMain.removeEventListener('mousemove', onPointerMove);
-    mapPinMain.removeEventListener('mouseup', onPointerWasMoved);
+    Pointer.removeEventListener('mouseleave', onPointerWasMoved);
+    Pointer.removeEventListener('mousemove', onPointerMove);
+    Pointer.removeEventListener('mouseup', onPointerWasMoved);
   };
 
-  mapPinMain.addEventListener('mouseleave', onPointerWasMoved);
-  mapPinMain.addEventListener('mousemove', onPointerMove);
-  mapPinMain.addEventListener('mouseup', onPointerWasMoved);
+  Pointer.addEventListener('mouseleave', onPointerWasMoved);
+  Pointer.addEventListener('mousemove', onPointerMove);
+  Pointer.addEventListener('mouseup', onPointerWasMoved);
 };
 
-mapPinMain.addEventListener('mousedown', onPointerCatched);
+Pointer.addEventListener('mousedown', onPointerCatched);
 
 mapPinsBlock.addEventListener('click', createCurrentPopup);
 
