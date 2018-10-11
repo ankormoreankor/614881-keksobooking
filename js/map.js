@@ -119,7 +119,6 @@
       Pointer.removeEventListener('mouseup', onPointerWasMoved);
     };
 
-    // Pointer.addEventListener('mousemove', loadData);
     Pointer.addEventListener('mouseleave', onPointerWasMoved);
     Pointer.addEventListener('mousemove', onPointerMove);
   };
