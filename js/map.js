@@ -9,7 +9,7 @@
     activateMap: function (condition) {
       if (condition === true) {
         this.mapBlock.classList.remove('map--faded');
-        loadData();
+        // loadData();
       } else {
         this.mapBlock.classList.add('map--faded');
       }
@@ -21,7 +21,7 @@
 
     window.backend.get(function (data) {
       while (window.map.mapData.length < data.length) {
-        window.map.mapData = window.map.mapData.concat(data);
+        window.map.mapData = data.slice(0);
       }
 
       return window.map.mapData;
@@ -106,6 +106,7 @@
         setPointerLeft(window.data.MAP_MIN_LEFT);
       }
 
+      Pointer.addEventListener('mouseup', loadData);
       Pointer.addEventListener('mouseup', onPointerWasMoved);
     };
 
