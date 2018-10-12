@@ -9,7 +9,7 @@
     activateMap: function (condition) {
       if (condition === true) {
         this.mapBlock.classList.remove('map--faded');
-        // loadData();
+        loadData();
       } else {
         this.mapBlock.classList.add('map--faded');
       }
@@ -106,14 +106,13 @@
         setPointerLeft(window.data.MAP_MIN_LEFT);
       }
 
-      Pointer.addEventListener('mouseup', loadData);
       Pointer.addEventListener('mouseup', onPointerWasMoved);
     };
 
     var onPointerWasMoved = function () {
       setAddress(true);
       window.form.activateForm(true);
-      window.backend.get(window.popup.createPins, window.form.onDataError);
+      window.popup.createPins(window.map.mapData);
 
       Pointer.removeEventListener('mouseleave', onPointerWasMoved);
       Pointer.removeEventListener('mousemove', onPointerMove);
@@ -218,7 +217,15 @@
 
       window.util.deleteChilds('button[type=button]', window.map.mapPinsBlock);
 
-      for (var i = 0; i < data.length; i++) {
+      var dataLength = 0;
+
+      if (data.length > 5) {
+        dataLength = 5;
+      } else {
+        dataLength = data.length;
+      }
+
+      for (var i = 0; i < dataLength; i++) {
         var pin = pinTemplate.cloneNode(true);
         pin.style.left = data[i].location.x + 'px';
         pin.style.top = data[i].location.y + 'px';
