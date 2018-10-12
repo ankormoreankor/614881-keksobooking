@@ -39,7 +39,7 @@
     return bestNewArray;
   };
 
-  var someFn = function (values) {
+  var sortAdds = function (values) {
     var newArr = [];
 
     var filterType = function (array, value) {
@@ -143,7 +143,7 @@
   };
 
   filters.addEventListener('change', function () {
-    someFn(getValues());
+    sortAdds(getValues());
   });
 
 })();
