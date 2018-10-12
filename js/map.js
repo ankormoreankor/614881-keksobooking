@@ -5,18 +5,31 @@
   window.map = {
     mapBlock: document.querySelector('.map'),
     mapWidth: document.querySelector('.map').offsetWidth,
-    mapPinsBlock: document.querySelector('.map__pins')
+    mapPinsBlock: document.querySelector('.map__pins'),
+    activateMap: function (condition) {
+      if (condition === true) {
+        this.mapBlock.classList.remove('map--faded');
+        loadData();
+      } else {
+        this.mapBlock.classList.add('map--faded');
+      }
+    },
+    mapData: []
+  };
+
+  var loadData = function () {
+
+    window.backend.get(function (data) {
+      while (window.map.mapData.length < data.length) {
+        window.map.mapData = data.slice(0);
+      }
+
+      return window.map.mapData;
+    }, null);
+
   };
 
   var Pointer = window.map.mapPinsBlock.querySelector('.map__pin--main');
-
-  var activateMap = function (condition) {
-    if (condition === true) {
-      window.map.mapBlock.classList.remove('map--faded');
-    } else {
-      window.map.mapBlock.classList.add('map--faded');
-    }
-  };
 
   var getPointerCoordinate = function (isMapActive) {
     return isMapActive === true ?
@@ -49,7 +62,7 @@
 
     var onPointerMove = function (moveEvt) {
       moveEvt.preventDefault();
-      activateMap(true);
+      window.map.activateMap(true);
 
       var shift = {
         x: startPosition.x - moveEvt.clientX,
@@ -99,7 +112,7 @@
     var onPointerWasMoved = function () {
       setAddress(true);
       window.form.activateForm(true);
-      window.util.addElem(window.util.deleteChilds('button[type=button]', window.map.mapPinsBlock), window.popup.createPins());
+      window.popup.createPins(window.map.mapData);
 
       Pointer.removeEventListener('mouseleave', onPointerWasMoved);
       Pointer.removeEventListener('mousemove', onPointerMove);
@@ -110,6 +123,7 @@
     Pointer.addEventListener('mousemove', onPointerMove);
   };
 
+
   Pointer.addEventListener('mousedown', onPointerCatched);
 })();
 
@@ -117,11 +131,15 @@
 // popup.js
 
 (function () {
-  var ADS_COUNT = 8;
-  var advertisements = window.moch.createAdsArr(ADS_COUNT);
+  // var ADS_COUNT = 8;
+  // var advertisements = window.moch.createAdsArr(ADS_COUNT);
 
   var appendPhotos = function (parentBlock, photosArray, selector) {
     var fragment = document.createDocumentFragment();
+    if (photosArray.length === 0) {
+      parentBlock.style.display = 'none';
+    }
+
     parentBlock.children[0].src = photosArray[0];
 
     for (var i = 1; i < photosArray.length; i++) {
@@ -132,6 +150,7 @@
     }
 
     return parentBlock.appendChild(fragment);
+
   };
 
   var appendFeatures = function (parentBlock, featuresList) {
@@ -148,7 +167,7 @@
     var mapFiltersContainer = document.querySelector('.map__filters-container');
     var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
     var popupCard = cardTemplate.cloneNode(true);
-    var addsOffer = advertisements[landlordNumber].offer;
+    var addsOffer = window.map.mapData[landlordNumber].offer;
 
     window.util.insertText('.popup__title', addsOffer.title, popupCard);
     window.util.insertText('.popup__text--address', addsOffer.adress, popupCard);
@@ -164,7 +183,7 @@
     var popupPhotos = popupCard.querySelector('.popup__photos');
     appendPhotos(popupPhotos, addsOffer.photos, '.popup__photo');
 
-    popupCard.querySelector('.popup__avatar').src = advertisements[landlordNumber].author.avatar;
+    popupCard.querySelector('.popup__avatar').src = window.map.mapData[landlordNumber].author.avatar;
 
     return window.map.mapBlock.insertBefore(popupCard, mapFiltersContainer);
   };
@@ -172,6 +191,7 @@
   var onPinClick = function (evt) {
     var coordinates = {};
 
+    coordinates = window.util.getElemCoordinate(evt.target);
     if (evt.target.parentNode.hasAttribute('style')) {
       coordinates = window.util.getElemCoordinate(evt.target.parentNode);
     } else if (evt.target.hasAttribute('style')) {
@@ -191,29 +211,44 @@
   };
 
   window.popup = {
-    createPins: function () {
+    createPins: function (data) {
       var fragment = document.createDocumentFragment();
       var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
-      for (var i = 0; i < advertisements.length; i++) {
+      window.util.deleteChilds('button[type=button]', window.map.mapPinsBlock);
+
+      var dataLength = 0;
+
+      if (data.length > 5) {
+        dataLength = 5;
+      } else {
+        dataLength = data.length;
+      }
+
+      for (var i = 0; i < dataLength; i++) {
         var pin = pinTemplate.cloneNode(true);
-        pin.style.left = advertisements[i].location.x + 'px';
-        pin.style.top = advertisements[i].location.y + 'px';
-        pin.children[0].src = advertisements[i].author.avatar;
-        pin.children[0].alt = advertisements[i].offer.title;
+        pin.style.left = data[i].location.x + 'px';
+        pin.style.top = data[i].location.y + 'px';
+        pin.children[0].src = data[i].author.avatar;
+        pin.children[0].alt = data[i].offer.title;
 
         fragment.appendChild(pin);
       }
 
-      return fragment;
+      window.map.mapPinsBlock.appendChild(fragment);
     },
 
     createCurrentPopup: function (evt) {
       window.util.deleteChilds('.map__card', window.map.mapBlock);
 
-      for (var i = 0; i < advertisements.length; i++) {
-        if (onPinClick(evt).left === advertisements[i].location.x) {
-          if (onPinClick(evt).top === advertisements[i].location.y) {
+      var coords = {
+        x: onPinClick(evt).left,
+        y: onPinClick(evt).top
+      };
+
+      for (var i = 0; i < window.map.mapData.length; i++) {
+        if (coords.x === window.map.mapData[i].location.x) {
+          if (coords.y === window.map.mapData[i].location.y) {
             createPopup(i);
           }
         }
@@ -226,6 +261,18 @@
     }
   };
 
-  window.map.mapPinsBlock.addEventListener('click', window.popup.createCurrentPopup);
+  window.map.mapPinsBlock.addEventListener('click', function (evt) {
+    var current = evt.target;
+
+
+    while (current !== window.map.mapPinsBlock) {
+      if (current.type === 'button') {
+        window.popup.createCurrentPopup(evt);
+        return;
+      }
+      current = current.parentNode;
+    }
+
+  });
 
 })();

@@ -32,6 +32,15 @@
     onSubmitValidateGuest();
   });
 
+  var onFormSubmit = function () {
+    window.map.activateMap(false);
+  };
+
+  notice.addEventListener('submit', function (evt) {
+    window.backend.post(new FormData(notice), onFormSubmit, window.form.onDataError);
+    evt.preventDefault();
+  });
+
   window.form = {
     activateForm: function (condition) {
       if (condition === true) {
@@ -41,6 +50,20 @@
         window.util.disableElem(fieldsets);
         notice.querySelector('.ad-form').classList.add('ad-form--disabled');
       }
+    },
+    onDataError: function (errorMessage) {
+      var errorTemplate = document.querySelector('#error').content.querySelector('.error');
+      var error = errorTemplate.cloneNode(true);
+
+      error.querySelector('.error__message').textContent = errorMessage;
+
+      document.body.insertAdjacentElement('afterbegin', error);
+    },
+    onFormSuccess: function () {
+      var successTemplate = document.querySelector('#success').content.querySelector('.success');
+      var success = successTemplate.cloneNode(true);
+
+      document.body.insertAdjacentElement('afterbegin', success);
     }
   };
 })();
