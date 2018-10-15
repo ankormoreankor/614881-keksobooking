@@ -38,85 +38,87 @@
     return bestNewArray;
   };
 
-  var sortAdds = function (values) {
-    var newArr = [];
+  var filterType = function (array, value) {
+    array = array.filter(function (item) {
+      return item.offer.type === value;
+    });
 
-    var filterType = function (array, value) {
-      array = array.filter(function (item) {
-        return item.offer.type === value;
-      });
+    return array;
+  };
 
-      return array;
-    };
+  var filterPrice = function (array, value) {
+    array = array.filter(function (item) {
+      var some = 0;
 
-    var filterPrice = function (array, value) {
-      array = array.filter(function (item) {
-        var some = 0;
-
-        if (item.offer.price < 10000) {
-          some = 'low';
-        } else if (item.offer.price > 50000) {
-          some = 'high';
-        } else {
-          some = 'middle';
-        }
-
-        return some === value;
-      });
-
-      return array;
-    };
-
-    var filterRooms = function (array, value) {
-      array = array.filter(function (item) {
-        return item.offer.rooms === +value;
-      });
-
-      return array;
-    };
-
-    var filterGuests = function (array, value) {
-      array = array.filter(function (item) {
-        return item.offer.guests === +value;
-      });
-
-      return array;
-    };
-
-    var filterFeatures = function (arrayForSort, keyArray) {
-      var sortingArray = arrayForSort.map(function (item) {
-        return item.offer.features.sort();
-      });
-
-      var someArr = [];
-
-      for (var i = 0; i < sortingArray.length; i++) {
-
-        var sum = 0;
-
-        for (var j = 0; j < keyArray.length; j++) {
-          sum += sortingArray[i].some(function (item) {
-            return item === keyArray[j];
-          });
-        }
-
-        if (sum < keyArray.length) {
-          someArr[i] = false;
-        } else {
-          someArr[i] = true;
-        }
-
-        if (someArr[i] === true) {
-          someArr[i] = arrayForSort[i];
-        }
+      if (item.offer.price < 10000) {
+        some = 'low';
+      } else if (item.offer.price > 50000) {
+        some = 'high';
+      } else {
+        some = 'middle';
       }
 
-      return someArr.filter(function (item) {
-        return item !== false;
-      }).map(function (item) {
-        return item;
-      });
-    };
+      return some === value;
+    });
+
+    return array;
+  };
+
+  var filterRooms = function (array, value) {
+    array = array.filter(function (item) {
+      return item.offer.rooms === +value;
+    });
+
+    return array;
+  };
+
+  var filterGuests = function (array, value) {
+    array = array.filter(function (item) {
+      return item.offer.guests === +value;
+    });
+
+    return array;
+  };
+
+  var filterFeatures = function (arrayForSort, keyArray) {
+    var sortingArray = arrayForSort.map(function (item) {
+      return item.offer.features.sort();
+    });
+
+    var someArr = [];
+
+    for (var i = 0; i < sortingArray.length; i++) {
+
+      var sum = 0;
+
+      for (var j = 0; j < keyArray.length; j++) {
+        sum += sortingArray[i].some(function (item) {
+          return item === keyArray[j];
+        });
+      }
+
+      if (sum < keyArray.length) {
+        someArr[i] = false;
+      } else {
+        someArr[i] = true;
+      }
+
+      if (someArr[i] === true) {
+        someArr[i] = arrayForSort[i];
+      }
+    }
+
+    var returnedArray = someArr.filter(function (item) {
+      return item !== false;
+    }).map(function (item) {
+      return item;
+    });
+
+    return returnedArray;
+  };
+
+  var sortAdds = function (values) {
+    var newArr = [];
 
     var filterFns = [
       filterType,

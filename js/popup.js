@@ -2,6 +2,8 @@
 
 (function () {
 
+  var mapBlock = document.querySelector('.map');
+
   var appendPhotos = function (parentBlock, photosArray, selector) {
     var fragment = document.createDocumentFragment();
     if (photosArray.length === 0) {
@@ -53,7 +55,7 @@
 
     popupCard.querySelector('.popup__avatar').src = window.map.mapData[landlordNumber].author.avatar;
 
-    return window.map.mapBlock.insertBefore(popupCard, mapFiltersContainer);
+    return mapBlock.insertBefore(popupCard, mapFiltersContainer);
   };
 
   var onPinClick = function (evt) {
@@ -74,16 +76,18 @@
   };
 
   var closeMapPopup = function () {
-    window.util.deleteChilds('.map__card', window.map.mapBlock);
+    window.util.deleteChilds('.map__card', mapBlock);
     document.removeEventListener('keydown', onPopupEscPress);
   };
+
+  var mapPinsBlock = document.querySelector('.map__pins');
 
   window.popup = {
     createPins: function (data) {
       var fragment = document.createDocumentFragment();
       var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
-      window.util.deleteChilds('button[type=button]', window.map.mapPinsBlock);
+      window.util.deleteChilds('button[type=button]', mapPinsBlock);
 
       var dataLength = 0;
 
@@ -103,11 +107,11 @@
         fragment.appendChild(pin);
       }
 
-      window.map.mapPinsBlock.appendChild(fragment);
+      mapPinsBlock.appendChild(fragment);
     },
 
     createCurrentPopup: function (evt) {
-      window.util.deleteChilds('.map__card', window.map.mapBlock);
+      window.util.deleteChilds('.map__card', mapBlock);
 
       var coords = {
         x: onPinClick(evt).left,
@@ -122,18 +126,18 @@
         }
       }
 
-      var popupCloseButton = window.map.mapBlock.querySelector('.popup__close');
+      var popupCloseButton = mapBlock.querySelector('.popup__close');
 
       popupCloseButton.addEventListener('click', closeMapPopup);
       document.addEventListener('keydown', onPopupEscPress);
     }
   };
 
-  window.map.mapPinsBlock.addEventListener('click', function (evt) {
+  mapPinsBlock.addEventListener('click', function (evt) {
     var current = evt.target;
 
 
-    while (current !== window.map.mapPinsBlock) {
+    while (current !== mapPinsBlock) {
       if (current.type === 'button') {
         window.popup.createCurrentPopup(evt);
         return;

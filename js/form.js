@@ -5,11 +5,12 @@
   var fieldsets = notice.querySelectorAll('fieldset');
   var roomsField = notice.querySelector('#room_number');
   var capacityField = notice.querySelector('#capacity');
+  var form = notice.querySelector('.ad-form');
   var formSubmitButton = notice.querySelector('.ad-form__submit');
 
   window.util.disableElem(fieldsets);
 
-  var onSubmitValidateGuest = function () {
+  var validateGuest = function () {
     var rooms = parseInt(roomsField.value, 10);
     var guests = parseInt(capacityField.value, 10);
 
@@ -29,7 +30,7 @@
   };
 
   formSubmitButton.addEventListener('click', function () {
-    onSubmitValidateGuest();
+    validateGuest();
   });
 
   var onFormSubmit = function () {
@@ -45,10 +46,10 @@
     activateForm: function (condition) {
       if (condition === true) {
         window.util.activateElem(fieldsets);
-        notice.querySelector('.ad-form').classList.remove('ad-form--disabled');
+        form.classList.remove('ad-form--disabled');
       } else {
         window.util.disableElem(fieldsets);
-        notice.querySelector('.ad-form').classList.add('ad-form--disabled');
+        form.classList.add('ad-form--disabled');
       }
     },
     onDataError: function (errorMessage) {

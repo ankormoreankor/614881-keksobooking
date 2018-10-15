@@ -1,17 +1,17 @@
 'use strict';
 
 (function () {
+  var mapBlock = document.querySelector('.map');
+  var mapWidth = document.querySelector('.map').offsetWidth;
+  var mapPinsBlock = document.querySelector('.map__pins');
 
   window.map = {
-    mapBlock: document.querySelector('.map'),
-    mapWidth: document.querySelector('.map').offsetWidth,
-    mapPinsBlock: document.querySelector('.map__pins'),
     activateMap: function (condition) {
       if (condition === true) {
-        this.mapBlock.classList.remove('map--faded');
+        mapBlock.classList.remove('map--faded');
         loadData();
       } else {
-        this.mapBlock.classList.add('map--faded');
+        mapBlock.classList.add('map--faded');
       }
     },
     mapData: []
@@ -29,28 +29,31 @@
 
   };
 
-  var pointer = window.map.mapPinsBlock.querySelector('.map__pin--main');
+  var pointer = mapPinsBlock.querySelector('.map__pin--main');
 
-  var getPointerCoordinate = function (isMapActive) {
-    return isMapActive === true ?
+  var getPointerCoordinate = function () {
+    var isMapFaded = [].some.call(mapBlock.classList, function (item) {
+      return item === 'map--faded';
+    });
+    return isMapFaded === true ?
       {
         left: window.util.getElemCoordinate(pointer).left + window.util.getElemCenter(pointer).x,
-        top: window.util.getElemCoordinate(pointer).top + pointer.offsetHeight + window.data.POINTER_ARROW_HEIGHT
+        top: window.util.getElemCoordinate(pointer).top + window.util.getElemCenter(pointer).y
       } : {
         left: window.util.getElemCoordinate(pointer).left + window.util.getElemCenter(pointer).x,
-        top: window.util.getElemCoordinate(pointer).top + window.util.getElemCenter(pointer).y
+        top: window.util.getElemCoordinate(pointer).top + pointer.offsetHeight + window.data.POINTER_ARROW_HEIGHT
       };
   };
 
-  var setAddress = function (isMapActive) {
+  var setAddress = function () {
     var address = document.querySelector('#address');
 
     return address.setAttribute('value',
-        getPointerCoordinate(isMapActive).left + ', ' +
-      getPointerCoordinate(isMapActive).top);
+        getPointerCoordinate().left + ', ' +
+      getPointerCoordinate().top);
   };
 
-  setAddress(false);
+  setAddress();
 
   var onPointerCatched = function (evt) {
     evt.preventDefault();
@@ -97,10 +100,10 @@
       }
 
       if (x >= window.data.MAP_MIN_LEFT) {
-        if (x <= (window.map.mapWidth - w)) {
+        if (x <= (mapWidth - w)) {
           setPointerLeft(x - shift.x);
         } else {
-          setPointerLeft(window.map.mapWidth - w);
+          setPointerLeft(mapWidth - w);
         }
       } else {
         setPointerLeft(window.data.MAP_MIN_LEFT);
@@ -110,7 +113,7 @@
     };
 
     var onPointerWasMoved = function () {
-      setAddress(true);
+      setAddress();
       window.form.activateForm(true);
       window.popup.createPins(window.map.mapData);
 

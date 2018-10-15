@@ -3,6 +3,9 @@
 (function () {
   var DATA = 'https://js.dump.academy/keksobooking/data';
   var URL = 'https://js.dump.academy/keksobooking';
+  var GET_TIMEOUT = 10000;
+  var POST_TIMEOUT = 10000;
+  var SUCCESS = 200;
 
   window.backend = {
     get: function (onLoad, onError) {
@@ -10,7 +13,7 @@
       xhr.responseType = 'json';
 
       xhr.addEventListener('load', function () {
-        if (xhr.status === 200) {
+        if (xhr.status === SUCCESS) {
           onLoad(xhr.response);
         } else {
           onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
@@ -23,7 +26,7 @@
         onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
       });
 
-      xhr.timeout = 10000;
+      xhr.timeout = GET_TIMEOUT;
 
       xhr.open('GET', DATA);
       xhr.send();
@@ -34,7 +37,7 @@
       xhr.responseType = 'json';
 
       xhr.addEventListener('load', function () {
-        if (xhr.status === 200) {
+        if (xhr.status === SUCCESS) {
           onLoad(xhr.response);
 
           window.form.onSuccess();
@@ -49,7 +52,7 @@
         onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
       });
 
-      xhr.timeout = 10000;
+      xhr.timeout = POST_TIMEOUT;
 
       xhr.open('POST', URL);
       xhr.send(data);
