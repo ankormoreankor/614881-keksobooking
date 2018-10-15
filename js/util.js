@@ -23,22 +23,22 @@
     },
 
     createRandomArr: function (array) {
-      var transitArr = array.slice(0, array.length);
+      var transitArray = array.slice(0, array.length);
       var newArr = [];
 
-      for (var i = 0; i < this.getRandomValue(transitArr); i++) {
-        newArr = newArr.concat(this.getRandomArrItem(transitArr));
+      for (var i = 0; i < this.getRandomValue(transitArray); i++) {
+        newArr = newArr.concat(this.getRandomArrItem(transitArray));
       }
 
       return newArr;
     },
 
     mixArr: function (array) {
-      var transitArr = array.slice(0, array.length);
+      var transitArray = array.slice(0, array.length);
       var newArr = [];
 
       for (var i = 0; i < array.length; i++) {
-        newArr[i] = this.getRandomArrItem(transitArr);
+        newArr[i] = this.getRandomArrItem(transitArray);
       }
 
       return newArr;
