@@ -13,37 +13,6 @@
       return Math.round(Math.random() * (arr.length - 1));
     },
 
-    getRandomFromTwo: function (min, max) {
-      return Math.round(min + Math.random() * (max - min));
-    },
-
-    getRandomArrItem: function (arr) {
-      arr = arr.splice(this.getRandomValue(arr), 1);
-      return arr[0];
-    },
-
-    createRandomArr: function (array) {
-      var transitArray = array.slice(0, array.length);
-      var newArr = [];
-
-      for (var i = 0; i < this.getRandomValue(transitArray); i++) {
-        newArr = newArr.concat(this.getRandomArrItem(transitArray));
-      }
-
-      return newArr;
-    },
-
-    mixArr: function (array) {
-      var transitArray = array.slice(0, array.length);
-      var newArr = [];
-
-      for (var i = 0; i < array.length; i++) {
-        newArr[i] = this.getRandomArrItem(transitArray);
-      }
-
-      return newArr;
-    },
-
     compareAndReturn: function (comparedArr, condition, returnedArr) {
 
       for (var i = 0; i < comparedArr.length; i++) {
@@ -61,10 +30,6 @@
       newElem.setAttribute(attribute, value);
 
       return newElem;
-    },
-
-    addElem: function (parent, child) {
-      return parent.appendChild(child);
     },
 
     insertText: function (selector, content, parentBlock) {

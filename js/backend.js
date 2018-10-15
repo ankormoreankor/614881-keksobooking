@@ -1,6 +1,5 @@
 'use strict';
 
-// backend.js
 (function () {
   var DATA = 'https://js.dump.academy/keksobooking/data';
   var URL = 'https://js.dump.academy/keksobooking';
@@ -13,7 +12,6 @@
       xhr.addEventListener('load', function () {
         if (xhr.status === 200) {
           onLoad(xhr.response);
-          // console.log(xhr.status);
         } else {
           onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
         }

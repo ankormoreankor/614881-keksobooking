@@ -1,6 +1,5 @@
 'use strict';
 
-// popup.js
 (function () {
 
   var appendPhotos = function (parentBlock, photosArray, selector) {

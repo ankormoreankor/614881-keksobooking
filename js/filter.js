@@ -1,6 +1,5 @@
 'use strict';
 
-// filter.js
 (function () {
   var filters = document.querySelector('.map__filters');
   var mapFilters = document.querySelectorAll('.map__filter');

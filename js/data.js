@@ -1,6 +1,5 @@
 'use strict';
 
-// data.js
 (function () {
   window.data = {
     MAP_MAX_TOP: 630,
