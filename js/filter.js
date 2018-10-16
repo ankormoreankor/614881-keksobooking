@@ -128,7 +128,7 @@
       filterFeatures
     ];
 
-    newArr = window.map.mapData.slice();
+    newArr = window.map.data.slice();
 
     for (var i = 0; i < values.length; i++) {
       if (values[i] !== 'any' && values[i].length !== 0) {
@@ -144,7 +144,7 @@
   };
 
   filters.addEventListener('change', function () {
-    window.popup.closeMapPopup();
+    window.popup.close();
     sortAdds(getValues());
   });
 

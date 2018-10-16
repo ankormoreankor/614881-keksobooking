@@ -37,7 +37,7 @@
     var mapFiltersContainer = document.querySelector('.map__filters-container');
     var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
     var popupCard = cardTemplate.cloneNode(true);
-    var addsOffer = window.map.mapData[landlordNumber].offer;
+    var addsOffer = window.map.data[landlordNumber].offer;
 
     window.util.insertText('.popup__title', addsOffer.title, popupCard);
     window.util.insertText('.popup__text--address', addsOffer.adress, popupCard);
@@ -53,7 +53,7 @@
     var popupPhotos = popupCard.querySelector('.popup__photos');
     appendPhotos(popupPhotos, addsOffer.photos, '.popup__photo');
 
-    popupCard.querySelector('.popup__avatar').src = window.map.mapData[landlordNumber].author.avatar;
+    popupCard.querySelector('.popup__avatar').src = window.map.data[landlordNumber].author.avatar;
 
     return mapBlock.insertBefore(popupCard, mapFiltersContainer);
   };
@@ -72,7 +72,7 @@
   };
 
   var onPopupEscPress = function (evt) {
-    window.util.isEscEvent(evt, window.popup.closeMapPopup);
+    window.util.isEscEvent(evt, window.popup.close);
   };
 
   var mapPinsBlock = document.querySelector('.map__pins');
@@ -103,14 +103,15 @@
       }
 
       mapPinsBlock.appendChild(fragment);
+      window.form.activate();
     },
 
-    closeMapPopup: function () {
+    close: function () {
       window.util.deleteChilds('.map__card', mapBlock);
       document.removeEventListener('keydown', onPopupEscPress);
     },
 
-    createCurrentPopup: function (evt) {
+    create: function (evt) {
       window.util.deleteChilds('.map__card', mapBlock);
 
       var coords = {
@@ -118,9 +119,9 @@
         y: onPinClick(evt).top
       };
 
-      for (var i = 0; i < window.map.mapData.length; i++) {
-        if (coords.x === window.map.mapData[i].location.x) {
-          if (coords.y === window.map.mapData[i].location.y) {
+      for (var i = 0; i < window.map.data.length; i++) {
+        if (coords.x === window.map.data[i].location.x) {
+          if (coords.y === window.map.data[i].location.y) {
             createPopup(i);
           }
         }
@@ -128,7 +129,7 @@
 
       var popupCloseButton = mapBlock.querySelector('.popup__close');
 
-      popupCloseButton.addEventListener('click', this.closeMapPopup);
+      popupCloseButton.addEventListener('click', this.close);
       document.addEventListener('keydown', onPopupEscPress);
     }
   };
@@ -139,7 +140,7 @@
 
     while (current !== mapPinsBlock) {
       if (current.type === 'button') {
-        window.popup.createCurrentPopup(evt);
+        window.popup.create(evt);
         return;
       }
       current = current.parentNode;

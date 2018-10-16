@@ -37,29 +37,25 @@
     validateGuest();
   });
 
-  var onFormSubmit = function () {
-    window.map.deactivateMap();
-  };
-
-  notice.addEventListener('submit', function (evt) {
-    window.backend.post(new FormData(notice), onFormSubmit, window.form.onDataError);
+  form.addEventListener('submit', function (evt) {
+    window.backend.post(new FormData(form), window.form.onSubmit, window.form.onError);
     evt.preventDefault();
   });
 
   window.form = {
-    activateForm: function () {
+    activate: function () {
       window.util.activateElem(fieldsets);
       window.util.activateElem(filters);
       window.util.activateElem(filterFeatures);
       form.classList.remove('ad-form--disabled');
     },
-    deactivateForm: function () {
+    deactivate: function () {
       window.util.disableElem(fieldsets);
       window.util.disableElem(filters);
       window.util.disableElem(filterFeatures);
       form.classList.add('ad-form--disabled');
     },
-    onDataError: function (errorMessage) {
+    onError: function (errorMessage) {
       var errorTemplate = document.querySelector('#error').content.querySelector('.error');
       var error = errorTemplate.cloneNode(true);
 
@@ -67,11 +63,14 @@
 
       document.body.insertAdjacentElement('afterbegin', error);
     },
-    onFormSuccess: function () {
+    onSuccess: function () {
       var successTemplate = document.querySelector('#success').content.querySelector('.success');
       var success = successTemplate.cloneNode(true);
 
       document.body.insertAdjacentElement('afterbegin', success);
+    },
+    onSubmit: function () {
+      window.map.deactivateMap();
     }
   };
 })();

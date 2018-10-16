@@ -6,24 +6,24 @@
   var mapPinsBlock = document.querySelector('.map__pins');
 
   window.map = {
-    activateMap: function () {
+    activate: function () {
       mapBlock.classList.remove('map--faded');
       loadData();
     },
-    deavtivateMap: function () {
+    deactivate: function () {
       mapBlock.classList.add('map--faded');
     },
-    mapData: []
+    data: []
   };
 
   var loadData = function () {
 
     window.backend.get(function (data) {
-      while (window.map.mapData.length < data.length) {
-        window.map.mapData = data.slice();
+      while (window.map.data.length < data.length) {
+        window.map.data = data.slice();
       }
 
-      return window.map.mapData;
+      return window.map.data;
     }, null);
 
   };
@@ -64,7 +64,7 @@
 
     var onPointerMove = function (moveEvt) {
       moveEvt.preventDefault();
-      window.map.activateMap();
+      window.map.activate();
 
       var shift = {
         x: startPosition.x - moveEvt.clientX,
@@ -109,19 +109,20 @@
       }
 
       pointer.addEventListener('mouseup', onPointerWasMoved);
+      pointer.addEventListener('mouseleave', onPointerWasMoved);
     };
 
     var onPointerWasMoved = function () {
       setAddress();
-      window.form.activateForm();
-      window.popup.createPins(window.map.mapData);
+      if (window.map.data.length !== 0) {
+        window.popup.createPins(window.map.data);
+      }
 
       pointer.removeEventListener('mouseleave', onPointerWasMoved);
       pointer.removeEventListener('mousemove', onPointerMove);
       pointer.removeEventListener('mouseup', onPointerWasMoved);
     };
 
-    pointer.addEventListener('mouseleave', onPointerWasMoved);
     pointer.addEventListener('mousemove', onPointerMove);
   };
 
