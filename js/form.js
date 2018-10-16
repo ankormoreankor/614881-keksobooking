@@ -3,12 +3,16 @@
 (function () {
   var notice = document.querySelector('.notice');
   var fieldsets = notice.querySelectorAll('fieldset');
+  var filters = document.querySelectorAll('.map__filter');
+  var filterFeatures = document.querySelectorAll('.map__features');
   var roomsField = notice.querySelector('#room_number');
   var capacityField = notice.querySelector('#capacity');
   var form = notice.querySelector('.ad-form');
   var formSubmitButton = notice.querySelector('.ad-form__submit');
 
   window.util.disableElem(fieldsets);
+  window.util.disableElem(filters);
+  window.util.disableElem(filterFeatures);
 
   var validateGuest = function () {
     var rooms = parseInt(roomsField.value, 10);
@@ -34,7 +38,7 @@
   });
 
   var onFormSubmit = function () {
-    window.map.activateMap(false);
+    window.map.deactivateMap();
   };
 
   notice.addEventListener('submit', function (evt) {
@@ -43,14 +47,17 @@
   });
 
   window.form = {
-    activateForm: function (condition) {
-      if (condition === true) {
-        window.util.activateElem(fieldsets);
-        form.classList.remove('ad-form--disabled');
-      } else {
-        window.util.disableElem(fieldsets);
-        form.classList.add('ad-form--disabled');
-      }
+    activateForm: function () {
+      window.util.activateElem(fieldsets);
+      window.util.activateElem(filters);
+      window.util.activateElem(filterFeatures);
+      form.classList.remove('ad-form--disabled');
+    },
+    deactivateForm: function () {
+      window.util.disableElem(fieldsets);
+      window.util.disableElem(filters);
+      window.util.disableElem(filterFeatures);
+      form.classList.add('ad-form--disabled');
     },
     onDataError: function (errorMessage) {
       var errorTemplate = document.querySelector('#error').content.querySelector('.error');

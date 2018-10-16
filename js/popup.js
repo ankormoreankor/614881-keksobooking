@@ -72,12 +72,7 @@
   };
 
   var onPopupEscPress = function (evt) {
-    window.util.isEscEvent(evt, closeMapPopup);
-  };
-
-  var closeMapPopup = function () {
-    window.util.deleteChilds('.map__card', mapBlock);
-    document.removeEventListener('keydown', onPopupEscPress);
+    window.util.isEscEvent(evt, window.popup.closeMapPopup);
   };
 
   var mapPinsBlock = document.querySelector('.map__pins');
@@ -110,6 +105,11 @@
       mapPinsBlock.appendChild(fragment);
     },
 
+    closeMapPopup: function () {
+      window.util.deleteChilds('.map__card', mapBlock);
+      document.removeEventListener('keydown', onPopupEscPress);
+    },
+
     createCurrentPopup: function (evt) {
       window.util.deleteChilds('.map__card', mapBlock);
 
@@ -128,7 +128,7 @@
 
       var popupCloseButton = mapBlock.querySelector('.popup__close');
 
-      popupCloseButton.addEventListener('click', closeMapPopup);
+      popupCloseButton.addEventListener('click', this.closeMapPopup);
       document.addEventListener('keydown', onPopupEscPress);
     }
   };

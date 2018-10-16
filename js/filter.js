@@ -17,11 +17,11 @@
       }
     }
 
-    var someArr = newArr.sort().filter(function (item) {
+    var transitArray = newArr.sort().filter(function (item) {
       return item !== false;
     });
 
-    array[array.length] = someArr;
+    array[array.length] = transitArray;
 
     return array;
   };
@@ -85,7 +85,7 @@
       return item.offer.features.sort();
     });
 
-    var someArr = [];
+    var transitArray = [];
 
     for (var i = 0; i < sortingArray.length; i++) {
 
@@ -98,17 +98,17 @@
       }
 
       if (sum < keyArray.length) {
-        someArr[i] = false;
+        transitArray[i] = false;
       } else {
-        someArr[i] = true;
+        transitArray[i] = true;
       }
 
-      if (someArr[i] === true) {
-        someArr[i] = arrayForSort[i];
+      if (transitArray[i] === true) {
+        transitArray[i] = arrayForSort[i];
       }
     }
 
-    var returnedArray = someArr.filter(function (item) {
+    var returnedArray = transitArray.filter(function (item) {
       return item !== false;
     }).map(function (item) {
       return item;
@@ -128,7 +128,7 @@
       filterFeatures
     ];
 
-    newArr = newArr.concat(window.map.mapData);
+    newArr = window.map.mapData.slice();
 
     for (var i = 0; i < values.length; i++) {
       if (values[i] !== 'any' && values[i].length !== 0) {
@@ -144,6 +144,7 @@
   };
 
   filters.addEventListener('change', function () {
+    window.popup.closeMapPopup();
     sortAdds(getValues());
   });
 

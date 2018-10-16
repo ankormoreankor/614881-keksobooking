@@ -6,13 +6,12 @@
   var mapPinsBlock = document.querySelector('.map__pins');
 
   window.map = {
-    activateMap: function (condition) {
-      if (condition === true) {
-        mapBlock.classList.remove('map--faded');
-        loadData();
-      } else {
-        mapBlock.classList.add('map--faded');
-      }
+    activateMap: function () {
+      mapBlock.classList.remove('map--faded');
+      loadData();
+    },
+    deavtivateMap: function () {
+      mapBlock.classList.add('map--faded');
     },
     mapData: []
   };
@@ -21,7 +20,7 @@
 
     window.backend.get(function (data) {
       while (window.map.mapData.length < data.length) {
-        window.map.mapData = data.slice(0);
+        window.map.mapData = data.slice();
       }
 
       return window.map.mapData;
@@ -65,7 +64,7 @@
 
     var onPointerMove = function (moveEvt) {
       moveEvt.preventDefault();
-      window.map.activateMap(true);
+      window.map.activateMap();
 
       var shift = {
         x: startPosition.x - moveEvt.clientX,
@@ -114,7 +113,7 @@
 
     var onPointerWasMoved = function () {
       setAddress();
-      window.form.activateForm(true);
+      window.form.activateForm();
       window.popup.createPins(window.map.mapData);
 
       pointer.removeEventListener('mouseleave', onPointerWasMoved);
@@ -128,4 +127,5 @@
 
 
   pointer.addEventListener('mousedown', onPointerCatched);
+
 })();
