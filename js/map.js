@@ -1,6 +1,11 @@
 'use strict';
 
 (function () {
+  var MAP_MAX_TOP = 630;
+  var MAP_MIN_TOP = 130;
+  var MAP_MIN_LEFT = 0;
+  var POINTER_ARROW_HEIGHT = 22;
+
   var mapBlock = document.querySelector('.map');
   var mapWidth = document.querySelector('.map').offsetWidth;
   var mapPinsBlock = document.querySelector('.map__pins');
@@ -8,24 +13,11 @@
   window.map = {
     activate: function () {
       mapBlock.classList.remove('map--faded');
-      loadData();
     },
     deactivate: function () {
       mapBlock.classList.add('map--faded');
     },
     data: []
-  };
-
-  var loadData = function () {
-
-    window.backend.get(function (data) {
-      while (window.map.data.length < data.length) {
-        window.map.data = data.slice();
-      }
-
-      return window.map.data;
-    }, null);
-
   };
 
   var pointer = mapPinsBlock.querySelector('.map__pin--main');
@@ -40,7 +32,7 @@
         top: window.util.getElemCoordinate(pointer).top + window.util.getElemCenter(pointer).y
       } : {
         left: window.util.getElemCoordinate(pointer).left + window.util.getElemCenter(pointer).x,
-        top: window.util.getElemCoordinate(pointer).top + pointer.offsetHeight + window.data.POINTER_ARROW_HEIGHT
+        top: window.util.getElemCoordinate(pointer).top + pointer.offsetHeight + POINTER_ARROW_HEIGHT
       };
   };
 
@@ -88,24 +80,24 @@
         pointer.style.left = left + 'px';
       };
 
-      if (y >= window.data.MAP_MIN_TOP) {
-        if (y <= window.data.MAP_MAX_TOP) {
+      if (y >= MAP_MIN_TOP) {
+        if (y <= MAP_MAX_TOP) {
           setPointerTop(y - shift.y);
         } else {
-          setPointerTop(window.data.MAP_MAX_TOP);
+          setPointerTop(MAP_MAX_TOP);
         }
       } else {
-        setPointerTop(window.data.MAP_MIN_TOP);
+        setPointerTop(MAP_MIN_TOP);
       }
 
-      if (x >= window.data.MAP_MIN_LEFT) {
+      if (x >= MAP_MIN_LEFT) {
         if (x <= (mapWidth - w)) {
           setPointerLeft(x - shift.x);
         } else {
           setPointerLeft(mapWidth - w);
         }
       } else {
-        setPointerLeft(window.data.MAP_MIN_LEFT);
+        setPointerLeft(MAP_MIN_LEFT);
       }
 
       pointer.addEventListener('mouseup', onPointerWasMoved);
@@ -114,8 +106,8 @@
 
     var onPointerWasMoved = function () {
       setAddress();
-      if (window.map.data.length !== 0) {
-        window.popup.createPins(window.map.data);
+      if (window.backend.adds.length !== 0) {
+        window.popup.createPins(window.backend.adds);
       }
 
       pointer.removeEventListener('mouseleave', onPointerWasMoved);

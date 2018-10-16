@@ -128,7 +128,7 @@
       filterFeatures
     ];
 
-    newArr = window.map.data.slice();
+    newArr = window.backend.adds.slice();
 
     for (var i = 0; i < values.length; i++) {
       if (values[i] !== 'any' && values[i].length !== 0) {

@@ -32,6 +32,7 @@
       xhr.send();
 
     },
+
     post: function (data, onLoad, onError) {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
@@ -56,7 +57,26 @@
 
       xhr.open('POST', URL);
       xhr.send(data);
-    }
+    },
+
+    adds: []
+
   };
+
+  var loadData = function () {
+
+    window.backend.get(function (data) {
+      while (window.backend.adds.length < data.length) {
+        window.backend.adds = data.slice();
+      }
+
+      return window.backend.adds;
+    }, null);
+
+    document.removeEventListener('DOMContentLoaded', loadData);
+
+  };
+
+  document.addEventListener('DOMContentLoaded', loadData);
 
 })();

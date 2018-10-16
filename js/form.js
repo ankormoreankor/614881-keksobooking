@@ -38,6 +38,7 @@
   });
 
   form.addEventListener('submit', function (evt) {
+    // debugger;
     window.backend.post(new FormData(form), window.form.onSubmit, window.form.onError);
     evt.preventDefault();
   });

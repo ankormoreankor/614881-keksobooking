@@ -2,6 +2,20 @@
 
 (function () {
 
+  var houseTypes = [
+    'palace',
+    'flat',
+    'house',
+    'bungalo'
+  ];
+
+  var houseTypesRus = [
+    'Дворец',
+    'Квартира',
+    'Дом',
+    'Бунгало'
+  ];
+
   var mapBlock = document.querySelector('.map');
 
   var appendPhotos = function (parentBlock, photosArray, selector) {
@@ -37,12 +51,12 @@
     var mapFiltersContainer = document.querySelector('.map__filters-container');
     var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
     var popupCard = cardTemplate.cloneNode(true);
-    var addsOffer = window.map.data[landlordNumber].offer;
+    var addsOffer = window.backend.adds[landlordNumber].offer;
 
     window.util.insertText('.popup__title', addsOffer.title, popupCard);
     window.util.insertText('.popup__text--address', addsOffer.adress, popupCard);
     window.util.insertText('.popup__text--price', addsOffer.price + '₽/ночь', popupCard);
-    window.util.insertText('.popup__type', window.util.compareAndReturn(window.data.houseTypes, addsOffer.type, window.data.houseTypesRus), popupCard);
+    window.util.insertText('.popup__type', window.util.compareAndReturn(houseTypes, addsOffer.type, houseTypesRus), popupCard);
     window.util.insertText('.popup__text--capacity', addsOffer.rooms + ' комнаты для ' + addsOffer.guests + ' гостей', popupCard);
     window.util.insertText('.popup__text--time', 'Заезд после ' + addsOffer.checkin + ', выезд до ' + addsOffer.checkout, popupCard);
     window.util.insertText('.popup__description', addsOffer.description, popupCard);
@@ -53,7 +67,7 @@
     var popupPhotos = popupCard.querySelector('.popup__photos');
     appendPhotos(popupPhotos, addsOffer.photos, '.popup__photo');
 
-    popupCard.querySelector('.popup__avatar').src = window.map.data[landlordNumber].author.avatar;
+    popupCard.querySelector('.popup__avatar').src = window.backend.adds[landlordNumber].author.avatar;
 
     return mapBlock.insertBefore(popupCard, mapFiltersContainer);
   };
@@ -119,9 +133,9 @@
         y: onPinClick(evt).top
       };
 
-      for (var i = 0; i < window.map.data.length; i++) {
-        if (coords.x === window.map.data[i].location.x) {
-          if (coords.y === window.map.data[i].location.y) {
+      for (var i = 0; i < window.backend.adds.length; i++) {
+        if (coords.x === window.backend.adds[i].location.x) {
+          if (coords.y === window.backend.adds[i].location.y) {
             createPopup(i);
           }
         }
