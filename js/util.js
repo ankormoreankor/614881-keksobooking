@@ -4,6 +4,13 @@
   var ESC_KEYCODE = 27;
 
   window.util = {
+    houseTypes: {
+      palace: {rus: 'Дворец', minPrice: 10000},
+      flat: {rus: 'Квартира', minPrice: 5000},
+      house: {rus: 'Дом', minPrice: 1000},
+      bungalo: {rus: 'Бунгало', minPrice: 0}
+    },
+
     isEscEvent: function (evt, action) {
       if (evt.keyCode === ESC_KEYCODE) {
         action();

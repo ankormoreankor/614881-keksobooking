@@ -8,6 +8,7 @@
   var form = notice.querySelector('.ad-form');
   var formInputs = notice.querySelectorAll('input');
   var formSubmitButton = notice.querySelector('.ad-form__submit');
+  var formResetButton = notice.querySelector('.ad-form__reset');
   var fieldsets = notice.querySelectorAll('fieldset');
   var filters = document.querySelectorAll('.map__filter');
   var filterFeatures = document.querySelectorAll('.map__features');
@@ -50,7 +51,7 @@
     }
   };
 
-  var onSabmitValidate = function () {
+  var onSubmitValidate = function () {
     validateGuest();
     validatePrice();
   };
@@ -90,19 +91,18 @@
   };
 
   var clearFields = function () {
+    debugger;
     for (var i = 0; i < formInputs.length; i++) {
-      formInputs[i].value = '';
-      formInputs[i].checked = false;
+      if (!formInputs[i].hasAttribute('readonly')) {
+        formInputs[i].value = '';
+        formInputs[i].checked = false;
+      }
     }
   };
-
-  formSubmitButton.addEventListener('click', onSabmitValidate);
 
   form.addEventListener('submit', function (evt) {
     window.backend.post(new FormData(form), window.form.onSubmit, window.form.onError);
     evt.preventDefault();
-
-    formSubmitButton.removeEventListener('click', onSabmitValidate);
   });
 
   window.form = {
@@ -113,6 +113,8 @@
       form.classList.remove('ad-form--disabled');
 
       document.removeEventListener('DOMContentLoaded', window.form.deactivate);
+      formSubmitButton.addEventListener('click', onSubmitValidate);
+      formResetButton.addEventListener('click', window.form.onReset);
     },
     deactivate: function () {
       window.util.disableElem(fieldsets);
@@ -139,9 +141,13 @@
       document.addEventListener('keydown', onSuccessEscPress);
     },
     onSubmit: function () {
+      clearFields();
       window.map.deactivate();
       window.form.deactivate();
-      clearFields();
+    },
+    onReset: function () {
+      window.map.deactivate();
+      window.form.deactivate();
     }
   };
 

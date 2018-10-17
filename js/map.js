@@ -12,19 +12,6 @@
   var pointer = mapPinsBlock.querySelector('.map__pin--main');
   var pointerStart = {};
 
-  window.map = {
-    activate: function () {
-      mapBlock.classList.remove('map--faded');
-    },
-    deactivate: function () {
-      mapBlock.classList.add('map--faded');
-      window.util.deleteChilds('button[type=button]', mapPinsBlock);
-      pointer.style.left = pointerStart.left + 'px';
-      pointer.style.top = pointerStart.top + 'px';
-    },
-    data: []
-  };
-
   var getPointerCoordinate = function () {
     var isMapFaded = [].some.call(mapBlock.classList, function (item) {
       return item === 'map--faded';
@@ -47,7 +34,20 @@
       getPointerCoordinate().top);
   };
 
-  setAddress();
+  window.map = {
+    activate: function () {
+      mapBlock.classList.remove('map--faded');
+      setAddress();
+    },
+    deactivate: function () {
+      mapBlock.classList.add('map--faded');
+      window.util.deleteChilds('button[type=button]', mapPinsBlock);
+      pointer.style.left = pointerStart.left + 'px';
+      pointer.style.top = pointerStart.top + 'px';
+      setAddress();
+    },
+    data: []
+  };
 
   var onPointerCatched = function (evt) {
     evt.preventDefault();
@@ -74,7 +74,7 @@
       var x = pointer.offsetLeft;
       var y = pointer.offsetTop;
       var w = pointer.offsetWidth;
-      var h = pointer.offsetHeight;
+      var h = pointer.offsetHeight + POINTER_ARROW_HEIGHT;
 
       var setPointerTop = function (top) {
         pointer.style.top = top + 'px';
@@ -128,7 +128,7 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     pointerStart = window.util.getElemCoordinate(pointer);
-    console.log(pointerStart)
   });
 
+  document.addEventListener('DOMContentLoaded', window.map.deactivate);
 })();
