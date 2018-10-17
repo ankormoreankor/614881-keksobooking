@@ -7,7 +7,7 @@
   var main = document.querySelector('main');
   var notice = document.querySelector('.notice');
   var mainForm = notice.querySelector('.ad-form');
-  var formInputs = notice.querySelectorAll('input');
+  var filterForm = document.querySelector('.map__filters');
   var formSubmitButton = notice.querySelector('.ad-form__submit');
   var formResetButton = notice.querySelector('.ad-form__reset');
   var fieldsets = notice.querySelectorAll('fieldset');
@@ -15,6 +15,7 @@
   var filterFeatures = document.querySelectorAll('.map__features');
   var roomsField = notice.querySelector('#room_number');
   var capacityField = notice.querySelector('#capacity');
+  var houseTypes = notice.querySelector('#type');
   var price = notice.querySelector('#price');
   var timein = notice.querySelector('#timein');
   var timeout = notice.querySelector('#timeout');
@@ -48,8 +49,22 @@
 
     if (value > MAX_PRICE || value < 0) {
       price.setCustomValidity('Цена должна быть положительной и не более ' + MAX_PRICE);
+    } else if (value < price.min) {
+      price.setCustomValidity('Цена должна быть не менее ' + price.min);
     } else {
       price.setCustomValidity('');
+    }
+  };
+
+  var onHouseTypeChange = function () {
+    debugger;
+    var type = houseTypes.value;
+
+    for (var i = 0; i < window.util.houseTypes.length; i++) {
+      if (type === window.util.houseTypes[i].type) {
+        price.min = window.util.houseTypes[i].minPrice;
+        price.placeholder = window.util.houseTypes[i].minPrice;
+      }
     }
   };
 
@@ -153,6 +168,7 @@
       mainForm.classList.remove('ad-form--disabled');
 
       document.removeEventListener('DOMContentLoaded', window.form.deactivate);
+      houseTypes.addEventListener('change', onHouseTypeChange);
       timein.addEventListener('change', validateTiming);
       timeout.addEventListener('change', validateTiming);
       formSubmitButton.addEventListener('click', onSubmitValidate);
@@ -164,6 +180,7 @@
       window.util.disableElem(filterFeatures);
       mainForm.classList.add('ad-form--disabled');
 
+      houseTypes.removeEventListener('change', onHouseTypeChange);
       timein.removeEventListener('change', validateTiming);
       timeout.removeEventListener('change', validateTiming);
       formSubmitButton.removeEventListener('click', onSubmitValidate);
@@ -189,11 +206,13 @@
     },
     onSubmit: function () {
       resetForm(mainForm);
+      resetForm(filterForm);
       window.map.deactivate();
       window.form.deactivate();
     },
     onReset: function () {
       resetForm(mainForm);
+      resetForm(filterForm);
       window.map.deactivate();
       window.form.deactivate();
     }
