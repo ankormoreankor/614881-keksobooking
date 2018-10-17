@@ -7,8 +7,10 @@
   var POINTER_ARROW_HEIGHT = 22;
 
   var mapBlock = document.querySelector('.map');
-  var mapWidth = document.querySelector('.map').offsetWidth;
+  var mapWidth = mapBlock.offsetWidth;
   var mapPinsBlock = document.querySelector('.map__pins');
+  var pointer = mapPinsBlock.querySelector('.map__pin--main');
+  var pointerStart = {};
 
   window.map = {
     activate: function () {
@@ -16,11 +18,12 @@
     },
     deactivate: function () {
       mapBlock.classList.add('map--faded');
+      window.util.deleteChilds('button[type=button]', mapPinsBlock);
+      pointer.style.left = pointerStart.left + 'px';
+      pointer.style.top = pointerStart.top + 'px';
     },
     data: []
   };
-
-  var pointer = mapPinsBlock.querySelector('.map__pin--main');
 
   var getPointerCoordinate = function () {
     var isMapFaded = [].some.call(mapBlock.classList, function (item) {
@@ -39,7 +42,7 @@
   var setAddress = function () {
     var address = document.querySelector('#address');
 
-    return address.setAttribute('value',
+    address.setAttribute('value',
         getPointerCoordinate().left + ', ' +
       getPointerCoordinate().top);
   };
@@ -71,6 +74,7 @@
       var x = pointer.offsetLeft;
       var y = pointer.offsetTop;
       var w = pointer.offsetWidth;
+      var h = pointer.offsetHeight;
 
       var setPointerTop = function (top) {
         pointer.style.top = top + 'px';
@@ -80,14 +84,14 @@
         pointer.style.left = left + 'px';
       };
 
-      if (y >= MAP_MIN_TOP) {
-        if (y <= MAP_MAX_TOP) {
+      if (y >= MAP_MIN_TOP - h) {
+        if (y <= MAP_MAX_TOP - h) {
           setPointerTop(y - shift.y);
         } else {
-          setPointerTop(MAP_MAX_TOP);
+          setPointerTop(MAP_MAX_TOP - h);
         }
       } else {
-        setPointerTop(MAP_MIN_TOP);
+        setPointerTop(MAP_MIN_TOP - h);
       }
 
       if (x >= MAP_MIN_LEFT) {
@@ -110,6 +114,7 @@
         window.popup.createPins(window.backend.adds);
       }
 
+      pointer.addEventListener('mousedown', onPointerCatched);
       pointer.removeEventListener('mouseleave', onPointerWasMoved);
       pointer.removeEventListener('mousemove', onPointerMove);
       pointer.removeEventListener('mouseup', onPointerWasMoved);
@@ -120,5 +125,10 @@
 
 
   pointer.addEventListener('mousedown', onPointerCatched);
+
+  document.addEventListener('DOMContentLoaded', function () {
+    pointerStart = window.util.getElemCoordinate(pointer);
+    console.log(pointerStart)
+  });
 
 })();

@@ -62,8 +62,6 @@
       nodeOrNodeList.forEach(function (node) {
         node.setAttribute('disabled', '');
       });
-
-      return;
     },
 
     activateElem: function (nodeOrNodeList) {
@@ -72,8 +70,6 @@
       nodeOrNodeList.forEach(function (node) {
         node.removeAttribute('disabled', '');
       });
-
-      return;
     },
 
     getElemCoordinate: function (elem) {

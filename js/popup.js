@@ -22,18 +22,18 @@
     var fragment = document.createDocumentFragment();
     if (photosArray.length === 0) {
       parentBlock.style.display = 'none';
+    } else {
+      parentBlock.children[0].src = photosArray[0];
+
+      for (var i = 1; i < photosArray.length; i++) {
+        var img = parentBlock.querySelector(selector).cloneNode(true);
+        img.src = photosArray[i];
+
+        fragment.appendChild(img);
+      }
+
+      parentBlock.appendChild(fragment);
     }
-
-    parentBlock.children[0].src = photosArray[0];
-
-    for (var i = 1; i < photosArray.length; i++) {
-      var img = parentBlock.querySelector(selector).cloneNode(true);
-      img.src = photosArray[i];
-
-      fragment.appendChild(img);
-    }
-
-    return parentBlock.appendChild(fragment);
 
   };
 
@@ -44,7 +44,7 @@
       fragment.appendChild(window.util.createChild('li', 'class', 'popup__feature' + ' ' + 'popup__feature--' + featuresList[i]));
     }
 
-    return parentBlock.appendChild(fragment);
+    parentBlock.appendChild(fragment);
   };
 
   var createPopup = function (landlordNumber) {
@@ -69,7 +69,7 @@
 
     popupCard.querySelector('.popup__avatar').src = window.backend.adds[landlordNumber].author.avatar;
 
-    return mapBlock.insertBefore(popupCard, mapFiltersContainer);
+    mapBlock.insertBefore(popupCard, mapFiltersContainer);
   };
 
   var onPinClick = function (evt) {
