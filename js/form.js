@@ -57,13 +57,13 @@
   };
 
   var onHouseTypeChange = function () {
-    debugger;
     var type = houseTypes.value;
 
     for (var i = 0; i < window.util.houseTypes.length; i++) {
       if (type === window.util.houseTypes[i].type) {
         price.min = window.util.houseTypes[i].minPrice;
         price.placeholder = window.util.houseTypes[i].minPrice;
+        return;
       }
     }
   };

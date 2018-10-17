@@ -7,35 +7,35 @@
   var features = featuresBlock.querySelectorAll('input[name=features]');
 
   var getFeatures = function (array) {
-    var newArr = [];
+    var transitArray = [];
 
     for (var i = 0; i < features.length; i++) {
       if (features[i].checked === true) {
-        newArr[i] = features[i].value;
+        transitArray[i] = features[i].value;
       } else {
-        newArr[i] = false;
+        transitArray[i] = false;
       }
     }
 
-    var transitArray = newArr.sort().filter(function (item) {
+    var newArray = transitArray.sort().filter(function (item) {
       return item !== false;
     });
 
-    array[array.length] = transitArray;
+    array[array.length] = newArray;
 
     return array;
   };
 
   var getValues = function () {
-    var newArr = [];
+    var transitArray = [];
 
     for (var i = 0; i < mapFilters.length; i++) {
-      newArr[i] = mapFilters[i].value;
+      transitArray[i] = mapFilters[i].value;
     }
 
-    var bestNewArray = getFeatures(newArr);
+    var newArray = getFeatures(transitArray);
 
-    return bestNewArray;
+    return newArray;
   };
 
   var filterType = function (array, value) {
@@ -118,7 +118,7 @@
   };
 
   var sortAdds = function (values) {
-    var newArr = [];
+    var transitArray = [];
 
     var filterFns = [
       filterType,
@@ -128,19 +128,19 @@
       filterFeatures
     ];
 
-    newArr = window.backend.adds.slice();
+    transitArray = window.backend.adds.slice();
 
     for (var i = 0; i < values.length; i++) {
       if (values[i] !== 'any' && values[i].length !== 0) {
-        newArr = filterFns[i](newArr, values[i]);
+        transitArray = filterFns[i](transitArray, values[i]);
       }
     }
 
-    var bestNewArray = newArr.map(function (item) {
+    var newArray = transitArray.map(function (item) {
       return item;
     });
 
-    window.popup.createPins(bestNewArray);
+    window.popup.createPins(newArray);
   };
 
   filters.addEventListener('change', function () {

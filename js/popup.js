@@ -2,20 +2,6 @@
 
 (function () {
 
-  var houseTypes = [
-    'palace',
-    'flat',
-    'house',
-    'bungalo'
-  ];
-
-  var houseTypesRus = [
-    'Дворец',
-    'Квартира',
-    'Дом',
-    'Бунгало'
-  ];
-
   var mapBlock = document.querySelector('.map');
 
   var appendPhotos = function (parentBlock, photosArray, selector) {
@@ -56,7 +42,7 @@
     window.util.insertText('.popup__title', addsOffer.title, popupCard);
     window.util.insertText('.popup__text--address', addsOffer.adress, popupCard);
     window.util.insertText('.popup__text--price', addsOffer.price + '₽/ночь', popupCard);
-    window.util.insertText('.popup__type', window.util.compareAndReturn(houseTypes, addsOffer.type, houseTypesRus), popupCard);
+    window.util.insertText('.popup__type', window.util.returnHouseTypeRus(addsOffer.type), popupCard);
     window.util.insertText('.popup__text--capacity', addsOffer.rooms + ' комнаты для ' + addsOffer.guests + ' гостей', popupCard);
     window.util.insertText('.popup__text--time', 'Заезд после ' + addsOffer.checkin + ', выезд до ' + addsOffer.checkout, popupCard);
     window.util.insertText('.popup__description', addsOffer.description, popupCard);

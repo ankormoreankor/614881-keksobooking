@@ -20,15 +20,15 @@
       return Math.round(Math.random() * (arr.length - 1));
     },
 
-    compareAndReturn: function (comparedArr, condition, returnedArr) {
-
-      for (var i = 0; i < comparedArr.length; i++) {
-        if (comparedArr[i] === condition) {
+    returnHouseTypeRus: function (houseType) {
+      for (var i = 0; i < window.util.houseTypes.length; i++) {
+        if (houseType === window.util.houseTypes[i].type) {
+          var typeRus = window.util.houseTypes[i].rus;
           break;
         }
       }
 
-      return returnedArr[i];
+      return typeRus;
     },
 
     createChild: function (tag, attribute, value) {
