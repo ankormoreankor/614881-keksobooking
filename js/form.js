@@ -4,8 +4,9 @@
   var MAX_PRICE = 1000000;
   var MAX_ROOMS = 100;
 
+  var main = document.querySelector('main');
   var notice = document.querySelector('.notice');
-  var form = notice.querySelector('.ad-form');
+  var mainForm = notice.querySelector('.ad-form');
   var formInputs = notice.querySelectorAll('input');
   var formSubmitButton = notice.querySelector('.ad-form__submit');
   var formResetButton = notice.querySelector('.ad-form__reset');
@@ -15,7 +16,8 @@
   var roomsField = notice.querySelector('#room_number');
   var capacityField = notice.querySelector('#capacity');
   var price = notice.querySelector('#price');
-  var main = document.querySelector('main');
+  var timein = notice.querySelector('#timein');
+  var timeout = notice.querySelector('#timeout');
 
   var validateGuest = function () {
     var rooms = parseInt(roomsField.value, 10);
@@ -90,18 +92,56 @@
     window.util.isEscEvent(evt, closeError);
   };
 
-  var clearFields = function () {
-    debugger;
-    for (var i = 0; i < formInputs.length; i++) {
-      if (!formInputs[i].hasAttribute('readonly')) {
-        formInputs[i].value = '';
-        formInputs[i].checked = false;
+  var clearInput = function (input) {
+    if (!input.hasAttribute('readonly')) {
+      input.value = '';
+      input.checked = false;
+    }
+  };
+
+  var resetSelect = function (select) {
+    var childs = select.childNodes;
+
+    for (var i = 0; i < childs.length; i++) {
+      if (childs[i].nodeName !== '#text' && childs[i].hasAttribute('selected')) {
+        select.value = childs[i].value;
+        return;
       }
     }
   };
 
-  form.addEventListener('submit', function (evt) {
-    window.backend.post(new FormData(form), window.form.onSubmit, window.form.onError);
+  var resetForm = function (form) {
+    var elems = form.childNodes;
+
+    var fields = [].filter.call(elems, function (elem) {
+      return elem.nodeName !== '#text';
+    }).map(function (field) {
+      return field;
+    });
+
+    for (var i = 0; i < fields.length; i++) {
+      if (fields[i].tagName === 'SELECT') {
+        resetSelect(fields[i]);
+      } else if (fields[i].tagName === 'INPUT') {
+        clearInput(fields[i]);
+      }
+
+      if (fields[i].hasChildNodes) {
+        resetForm(fields[i]);
+      }
+    }
+  };
+
+  var validateTiming = function (evt) {
+    if (evt.target === timein) {
+      timeout.value = timein.value;
+    } else if (evt.target === timeout) {
+      timein.value = timeout.value;
+    }
+  };
+
+  mainForm.addEventListener('submit', function (evt) {
+    window.backend.post(new FormData(mainForm), window.form.onSubmit, window.form.onError);
     evt.preventDefault();
   });
 
@@ -110,9 +150,11 @@
       window.util.activateElem(fieldsets);
       window.util.activateElem(filters);
       window.util.activateElem(filterFeatures);
-      form.classList.remove('ad-form--disabled');
+      mainForm.classList.remove('ad-form--disabled');
 
       document.removeEventListener('DOMContentLoaded', window.form.deactivate);
+      timein.addEventListener('change', validateTiming);
+      timeout.addEventListener('change', validateTiming);
       formSubmitButton.addEventListener('click', onSubmitValidate);
       formResetButton.addEventListener('click', window.form.onReset);
     },
@@ -120,7 +162,12 @@
       window.util.disableElem(fieldsets);
       window.util.disableElem(filters);
       window.util.disableElem(filterFeatures);
-      form.classList.add('ad-form--disabled');
+      mainForm.classList.add('ad-form--disabled');
+
+      timein.removeEventListener('change', validateTiming);
+      timeout.removeEventListener('change', validateTiming);
+      formSubmitButton.removeEventListener('click', onSubmitValidate);
+      formResetButton.removeEventListener('click', window.form.onReset);
     },
     onError: function (errorMessage) {
       var errorTemplate = document.querySelector('#error').content.querySelector('.error');
@@ -141,11 +188,12 @@
       document.addEventListener('keydown', onSuccessEscPress);
     },
     onSubmit: function () {
-      clearFields();
+      resetForm(mainForm);
       window.map.deactivate();
       window.form.deactivate();
     },
     onReset: function () {
+      resetForm(mainForm);
       window.map.deactivate();
       window.form.deactivate();
     }
